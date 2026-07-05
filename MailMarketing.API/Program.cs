@@ -1,3 +1,5 @@
+using MailMarketing.Business.Services;
+using MailMarketing.Core.Utilities.Security;
 using MailMarketing.DataAccess.Contexts;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,8 +10,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<MailMarketingDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddScoped<IEncryptionService, EncryptionService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
@@ -21,6 +26,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.MapControllers();
 
 var summaries = new[]
 {

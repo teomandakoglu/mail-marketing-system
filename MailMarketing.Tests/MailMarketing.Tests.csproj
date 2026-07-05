@@ -12,6 +12,7 @@
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.*" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.*" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.*" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.*" />
@@ -27,6 +28,7 @@
     <ProjectReference Include="..\MailMarketing.DataAccess\MailMarketing.DataAccess.csproj" />
     <ProjectReference Include="..\MailMarketing.Entities\MailMarketing.Entities.csproj" />
     <ProjectReference Include="..\MailMarketing.Core\MailMarketing.Core.csproj" />
+    <ProjectReference Include="..\MailMarketing.Business\MailMarketing.Business.csproj" />
   </ItemGroup>
 
 </Project>
