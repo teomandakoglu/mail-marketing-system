@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MailMarketing.Core", "MailMarketing.Core\MailMarketing.Core.csproj", "{306BB42A-B841-4845-8F50-2090A6D79836}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MailMarketing.Entities", "MailMarketing.Entities\MailMarketing.Entities.csproj", "{CD8A8D92-5860-4425-A504-AE514373B90F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MailMarketing.DataAccess", "MailMarketing.DataAccess\MailMarketing.DataAccess.csproj", "{69A83BDC-BE24-4261-8C37-E67A122ABC89}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MailMarketing.Business", "MailMarketing.Business\MailMarketing.Business.csproj", "{29F68A0C-B6A7-4C5F-A7E1-6648EC74D180}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MailMarketing.API", "MailMarketing.API\MailMarketing.API.csproj", "{6022C5B9-14B2-483A-9F37-519C098FBEB3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{306BB42A-B841-4845-8F50-2090A6D79836}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{306BB42A-B841-4845-8F50-2090A6D79836}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{306BB42A-B841-4845-8F50-2090A6D79836}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{306BB42A-B841-4845-8F50-2090A6D79836}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD8A8D92-5860-4425-A504-AE514373B90F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD8A8D92-5860-4425-A504-AE514373B90F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD8A8D92-5860-4425-A504-AE514373B90F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD8A8D92-5860-4425-A504-AE514373B90F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69A83BDC-BE24-4261-8C37-E67A122ABC89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69A83BDC-BE24-4261-8C37-E67A122ABC89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69A83BDC-BE24-4261-8C37-E67A122ABC89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69A83BDC-BE24-4261-8C37-E67A122ABC89}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29F68A0C-B6A7-4C5F-A7E1-6648EC74D180}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29F68A0C-B6A7-4C5F-A7E1-6648EC74D180}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29F68A0C-B6A7-4C5F-A7E1-6648EC74D180}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29F68A0C-B6A7-4C5F-A7E1-6648EC74D180}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6022C5B9-14B2-483A-9F37-519C098FBEB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6022C5B9-14B2-483A-9F37-519C098FBEB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6022C5B9-14B2-483A-9F37-519C098FBEB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6022C5B9-14B2-483A-9F37-519C098FBEB3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
