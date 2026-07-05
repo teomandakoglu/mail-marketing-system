@@ -22,6 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="..\MailMarketing.Business\MailMarketing.Business.csproj" />
     <ProjectReference Include="..\MailMarketing.Core\MailMarketing.Core.csproj" />
+    <ProjectReference Include="..\MailMarketing.DataAccess\MailMarketing.DataAccess.csproj" />
   </ItemGroup>
 
 </Project>
