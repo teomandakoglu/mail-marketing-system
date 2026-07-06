@@ -1,0 +1,12 @@
+namespace MailMarketing.Business.DTOs.Reports;
+
+public class ReportFilterDto
+{
+    public int? TemplateId { get; set; }
+
+    public DateTime? StartDate { get; set; }
+
+    public DateTime? EndDate { get; set; }
+
+    public string? Status { get; set; }
+}

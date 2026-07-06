@@ -22,6 +22,7 @@ builder.Services.AddScoped<ITemplateService, TemplateService>();
 builder.Services.AddScoped<IEmailConfigService, EmailConfigService>();
 builder.Services.AddSingleton<IMailQueue, MailQueue>();
 builder.Services.AddScoped<IMailSenderService, MailSenderService>();
+builder.Services.AddScoped<IMailLogService, MailLogService>();
 builder.Services.AddHostedService<MailSendingBackgroundWorker>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
