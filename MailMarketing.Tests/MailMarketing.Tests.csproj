@@ -29,6 +29,11 @@
     <ProjectReference Include="..\MailMarketing.Entities\MailMarketing.Entities.csproj" />
     <ProjectReference Include="..\MailMarketing.Core\MailMarketing.Core.csproj" />
     <ProjectReference Include="..\MailMarketing.Business\MailMarketing.Business.csproj" />
+    <ProjectReference Include="..\MailMarketing.API\MailMarketing.API.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
 </Project>

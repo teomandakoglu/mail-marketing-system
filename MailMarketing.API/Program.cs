@@ -1,7 +1,9 @@
 using System.Text;
+using MailMarketing.API.Workers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using MailMarketing.Business.Services;
 using MailMarketing.Core.Utilities.Security;
+using MailMarketing.Core.Utilities.Queue;
 using MailMarketing.DataAccess.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -18,6 +20,9 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ISubscriberService, SubscriberService>();
 builder.Services.AddScoped<ITemplateService, TemplateService>();
 builder.Services.AddScoped<IEmailConfigService, EmailConfigService>();
+builder.Services.AddSingleton<IMailQueue, MailQueue>();
+builder.Services.AddScoped<IMailSenderService, MailSenderService>();
+builder.Services.AddHostedService<MailSendingBackgroundWorker>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
