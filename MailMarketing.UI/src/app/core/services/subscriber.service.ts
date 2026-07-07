@@ -25,8 +25,8 @@ export class SubscriberService {
     return this.http.get<SubscriberDto[]>(this.apiUrl);
   }
 
-  create(subscriber: CreateSubscriberDto): Observable<SubscriberDto> {
-    return this.http.post<SubscriberDto>(this.apiUrl, subscriber);
+  create(subscriber: CreateSubscriberDto): Observable<string> {
+    return this.http.post<string>(this.apiUrl, subscriber, { responseType: 'text' as 'json' });
   }
 
   delete(id: number): Observable<void> {

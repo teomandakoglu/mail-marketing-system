@@ -32,6 +32,14 @@ export class ReportService {
     let params = new HttpParams();
 
     Object.entries(filter).forEach(([key, value]) => {
+      if (key === 'status') {
+        if (value === 'Success' || value === 'Failed') {
+          params = params.set(key, value);
+        }
+
+        return;
+      }
+
       if (value !== null && value !== undefined && value !== '') {
         params = params.set(key, String(value));
       }

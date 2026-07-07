@@ -55,13 +55,12 @@ export class Subscribers implements OnInit {
     this.isSubmitting.set(true);
 
     this.subscriberService.create(this.subscriberForm.getRawValue()).subscribe({
-      next: subscriber => {
-        this.subscribers.set([subscriber, ...this.subscribers()]);
-        this.filterSubscribers();
+      next: () => {
         this.subscriberForm.reset();
         this.submitAttempted = false;
         this.isSubmitting.set(false);
         this.successMessage.set('Başarıyla kaydedildi.');
+        this.loadSubscribers();
       },
       error: () => {
         this.isSubmitting.set(false);

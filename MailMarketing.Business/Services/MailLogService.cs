@@ -40,8 +40,7 @@ public class MailLogService : IMailLogService
 
         if (!string.IsNullOrWhiteSpace(filter.Status))
         {
-            var status = filter.Status.Trim();
-            query = query.Where(mailLog => mailLog.Status == status);
+            query = query.Where(mailLog => mailLog.Status == filter.Status);
         }
 
         return await query
