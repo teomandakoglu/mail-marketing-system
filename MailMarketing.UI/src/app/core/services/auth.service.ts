@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map, tap } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 export interface LoginDto {
   email: string;
@@ -24,7 +25,7 @@ interface LoginResponse {
 })
 export class AuthService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:5281/api/auth';
+  private readonly apiUrl = `${environment.apiUrl}/auth`;
   private readonly tokenKey = 'mailMarketingToken';
 
   login(credentials: LoginDto): Observable<string> {

@@ -34,7 +34,7 @@ export class Login {
     this.authService.login(this.form.getRawValue()).subscribe({
       next: () => {
         this.isSubmitting = false;
-        void this.router.navigate(['/dashboard']);
+        void this.router.navigate(['/subscribers']);
       },
       error: () => {
         this.isSubmitting = false;

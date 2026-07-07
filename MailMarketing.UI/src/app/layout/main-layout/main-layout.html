@@ -1,0 +1,31 @@
+<div class="shell">
+  <aside class="sidebar" aria-label="Ana menu">
+    <div class="brand">
+      <span class="brand-mark">M</span>
+      <span>Mail Marketing</span>
+    </div>
+
+    <nav class="nav">
+      <a routerLink="/subscribers" routerLinkActive="active">Aboneler</a>
+      <a routerLink="/templates" routerLinkActive="active">Şablonlar</a>
+      <a routerLink="/email-config" routerLinkActive="active">SMTP Ayarları</a>
+      <a routerLink="/campaigns" routerLinkActive="active">Kampanya Gönderimi</a>
+      <a routerLink="/reports" routerLinkActive="active">Raporlar</a>
+    </nav>
+  </aside>
+
+  <section class="workspace">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Yönetim Paneli</p>
+        <h1>MailMarketingSystem</h1>
+      </div>
+
+      <button type="button" (click)="logout()">Çıkış Yap</button>
+    </header>
+
+    <main class="content">
+      <router-outlet />
+    </main>
+  </section>
+</div>
