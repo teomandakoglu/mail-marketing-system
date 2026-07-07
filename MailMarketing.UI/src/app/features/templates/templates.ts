@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { QuillModule } from 'ngx-quill';
+import { finalize } from 'rxjs';
 import { TemplateDto, TemplateService } from '../../core/services/template.service';
 
 @Component({
@@ -121,13 +122,15 @@ export class Templates implements OnInit {
     this.isLoading = true;
     this.errorMessage = '';
 
-    this.templateService.getAll().subscribe({
+    this.templateService.getAll().pipe(
+      finalize(() => {
+        this.isLoading = false;
+      })
+    ).subscribe({
       next: templates => {
         this.templates = templates;
-        this.isLoading = false;
       },
       error: () => {
-        this.isLoading = false;
         this.errorMessage = 'Şablonlar yüklenemedi.';
       }
     });

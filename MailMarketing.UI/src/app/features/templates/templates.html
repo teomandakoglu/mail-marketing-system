@@ -10,9 +10,10 @@
   <section class="panel">
     <form class="template-form" [formGroup]="templateForm" (ngSubmit)="addTemplate()" novalidate>
       <div class="field">
-        <label for="template-title">Şablon Başlığı</label>
+        <label for="templateTitle">Şablon Başlığı</label>
         <input
-          id="template-title"
+          id="templateTitle"
+          name="templateTitle"
           type="text"
           formControlName="title"
           placeholder="Kampanya başlığını yazın"
@@ -22,9 +23,10 @@
       </div>
 
       <div class="field editor-field">
-        <label for="template-content">İçerik</label>
+        <label for="templateContent">İçerik</label>
         <quill-editor
-          id="template-content"
+          id="templateContent"
+          name="templateContent"
           formControlName="content"
           [modules]="editorModules"
           placeholder="Mail içeriğini yazın"
