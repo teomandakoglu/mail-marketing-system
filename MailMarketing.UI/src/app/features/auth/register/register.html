@@ -1,0 +1,35 @@
+<section class="auth-page">
+  <form class="auth-form" [formGroup]="form" (ngSubmit)="submit()">
+    <h1>Kayıt</h1>
+
+    <label>
+      Ad
+      <input type="text" formControlName="firstName" autocomplete="given-name" />
+    </label>
+
+    <label>
+      Soyad
+      <input type="text" formControlName="lastName" autocomplete="family-name" />
+    </label>
+
+    <label>
+      Email
+      <input type="email" formControlName="email" autocomplete="email" />
+    </label>
+
+    <label>
+      Parola
+      <input type="password" formControlName="password" autocomplete="new-password" />
+    </label>
+
+    @if (errorMessage) {
+      <p class="error">{{ errorMessage }}</p>
+    }
+
+    <button type="submit" [disabled]="isSubmitting">
+      {{ isSubmitting ? 'Kaydediliyor...' : 'Kayıt ol' }}
+    </button>
+
+    <a routerLink="/auth/login">Girişe dön</a>
+  </form>
+</section>

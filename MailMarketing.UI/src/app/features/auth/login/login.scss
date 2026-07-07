@@ -1,0 +1,56 @@
+.auth-page {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 24px;
+  background: #f6f7fb;
+}
+
+.auth-form {
+  display: grid;
+  width: min(100%, 380px);
+  gap: 16px;
+  padding: 28px;
+  border: 1px solid #d9deea;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+label {
+  display: grid;
+  gap: 6px;
+  color: #273043;
+  font-size: 14px;
+}
+
+input {
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 1px solid #c8cfdd;
+  border-radius: 6px;
+  font: inherit;
+}
+
+button {
+  min-height: 42px;
+  border: 0;
+  border-radius: 6px;
+  background: #155eef;
+  color: #ffffff;
+  font: inherit;
+  font-weight: 600;
+}
+
+button:disabled {
+  background: #9aa7bd;
+}
+
+.error {
+  margin: 0;
+  color: #b42318;
+}
