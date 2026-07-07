@@ -1,0 +1,59 @@
+<main class="landing-page">
+  <section class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow">MailMarketingSystem</p>
+      <h1>Akıllı kampanyalar için sade bülten altyapısı</h1>
+      <p class="lead">
+        Yeni duyurular, kampanya fikirleri ve ürün güncellemelerini tek bir yerden takip edin. E-posta adresinizi bırakın, doğru zamanda doğru bilgiyi size ulaştıralım.
+      </p>
+
+      <form class="subscribe-form" [formGroup]="form" (ngSubmit)="subscribe()" novalidate>
+        <div class="field">
+          <label for="landingEmail">Mail adresiniz</label>
+          <input
+            id="landingEmail"
+            name="landingEmail"
+            type="email"
+            formControlName="email"
+            placeholder="adiniz@firma.com"
+            autocomplete="email"
+            [class.invalid]="showEmailError"
+          />
+          <p class="field-error" *ngIf="showEmailError">Geçerli bir mail adresi giriniz.</p>
+        </div>
+
+        <button type="submit" [disabled]="isSubmitting()">
+          {{ isSubmitting() ? 'Kaydediliyor...' : 'Abone Ol' }}
+        </button>
+      </form>
+
+      <p class="success-message" *ngIf="successMessage()">{{ successMessage() }}</p>
+      <p class="error-message" *ngIf="errorMessage()">{{ errorMessage() }}</p>
+
+      <a class="admin-link" routerLink="/auth/login">Yönetim paneline giriş</a>
+    </div>
+
+    <div class="hero-visual" aria-label="Mail kampanya görseli">
+      <div class="mail-card primary">
+        <span></span>
+        <strong>Kampanya</strong>
+        <small>3.248 alıcıya hazır</small>
+      </div>
+      <div class="mail-card secondary">
+        <span></span>
+        <strong>Bülten</strong>
+        <small>Yeni aboneler eklendi</small>
+      </div>
+      <div class="metric-strip">
+        <div>
+          <strong>98%</strong>
+          <small>kuyruk sağlığı</small>
+        </div>
+        <div>
+          <strong>24/7</strong>
+          <small>arka plan işçisi</small>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>

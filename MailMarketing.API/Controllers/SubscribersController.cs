@@ -33,6 +33,15 @@ public class SubscribersController : ControllerBase
         return result ? Ok("Subscriber created successfully.") : BadRequest("Subscriber email already exists.");
     }
 
+    [AllowAnonymous]
+    [HttpPost("public")]
+    public async Task<IActionResult> PublicSubscribe(CreateSubscriberDto createSubscriberDto)
+    {
+        var result = await _subscriberService.AddAsync(createSubscriberDto);
+
+        return result ? Ok("Kaydedildi.") : BadRequest("Bu mail adresi zaten kayıtlı.");
+    }
+
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {

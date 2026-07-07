@@ -13,6 +13,10 @@ export const routes: Routes = [
   },
   {
     path: '',
+    loadComponent: () => import('./features/landing/landing').then(component => component.Landing)
+  },
+  {
+    path: 'panel',
     component: MainLayoutComponent,
     canActivate: [authGuard],
     children: [
@@ -49,6 +53,6 @@ export const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: 'auth/login'
+    redirectTo: ''
   }
 ];
