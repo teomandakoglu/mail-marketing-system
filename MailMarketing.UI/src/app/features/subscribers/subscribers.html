@@ -1,3 +1,83 @@
-<section class="page-panel">
-  <h2>Aboneler sayfası çalışıyor</h2>
+<section class="subscribers-page">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">Liste Yönetimi</p>
+      <h2>Aboneler</h2>
+    </div>
+    <span class="count">{{ filteredSubscribers.length }} kayıt</span>
+  </header>
+
+  <section class="panel">
+    <form class="add-form" [formGroup]="subscriberForm" (ngSubmit)="addSubscriber()" novalidate>
+      <div class="field">
+        <label for="subscriber-email">E-posta</label>
+        <input
+          id="subscriber-email"
+          type="email"
+          formControlName="email"
+          placeholder="ornek@firma.com"
+          autocomplete="email"
+          [class.invalid]="showEmailError"
+        />
+        <p class="field-error" *ngIf="showEmailError">Geçerli bir e-posta adresi giriniz.</p>
+      </div>
+
+      <button class="primary-button" type="submit" [disabled]="isSubmitting">
+        {{ isSubmitting ? 'Kaydediliyor...' : 'Abone Ekle' }}
+      </button>
+    </form>
+
+    <p class="success-message" *ngIf="successMessage">{{ successMessage }}</p>
+    <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
+  </section>
+
+  <section class="panel filters">
+    <div class="field">
+      <label for="email-filter">E-posta ara</label>
+      <input
+        id="email-filter"
+        type="text"
+        [(ngModel)]="emailFilter"
+        (ngModelChange)="filterSubscribers()"
+        placeholder="E-posta adresine göre filtrele"
+      />
+    </div>
+
+    <div class="field">
+      <label for="date-filter">Tarihe göre ara</label>
+      <input
+        id="date-filter"
+        type="date"
+        [(ngModel)]="dateFilter"
+        (ngModelChange)="filterSubscribers()"
+      />
+    </div>
+  </section>
+
+  <section class="table-panel">
+    <div class="loading-state" *ngIf="isLoading">Aboneler yükleniyor...</div>
+
+    <table *ngIf="!isLoading && filteredSubscribers.length > 0">
+      <thead>
+        <tr>
+          <th>E-posta</th>
+          <th>Kayıt Zamanı</th>
+          <th class="actions-column">İşlemler</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let subscriber of filteredSubscribers">
+          <td>{{ subscriber.email }}</td>
+          <td>{{ subscriber.createdAt | date: 'dd.MM.yyyy HH:mm' }}</td>
+          <td class="actions-column">
+            <button class="danger-button" type="button" (click)="deleteSubscriber(subscriber)">Sil</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="empty-state" *ngIf="!isLoading && filteredSubscribers.length === 0">
+      Gösterilecek abone bulunamadı.
+    </div>
+  </section>
 </section>
