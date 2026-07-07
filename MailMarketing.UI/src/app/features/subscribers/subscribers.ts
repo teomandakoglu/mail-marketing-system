@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SubscriberDto, SubscriberService } from '../../core/services/subscriber.service';
 
@@ -13,15 +13,15 @@ export class Subscribers implements OnInit {
   private readonly formBuilder = inject(FormBuilder);
   private readonly subscriberService = inject(SubscriberService);
 
-  protected subscribers: SubscriberDto[] = [];
-  protected filteredSubscribers: SubscriberDto[] = [];
+  protected readonly subscribers = signal<SubscriberDto[]>([]);
+  protected readonly filteredSubscribers = signal<SubscriberDto[]>([]);
   protected emailFilter = '';
   protected dateFilter = '';
-  protected isLoading = false;
-  protected isSubmitting = false;
+  protected readonly isLoading = signal(false);
+  protected readonly isSubmitting = signal(false);
   protected submitAttempted = false;
-  protected successMessage = '';
-  protected errorMessage = '';
+  protected readonly successMessage = signal('');
+  protected readonly errorMessage = signal('');
 
   protected readonly subscriberForm = this.formBuilder.nonNullable.group({
     email: ['', [Validators.required, Validators.email]]
@@ -34,38 +34,38 @@ export class Subscribers implements OnInit {
   protected filterSubscribers(): void {
     const normalizedEmail = this.emailFilter.trim().toLowerCase();
 
-    this.filteredSubscribers = this.subscribers.filter(subscriber => {
+    this.filteredSubscribers.set(this.subscribers().filter(subscriber => {
       const matchesEmail = !normalizedEmail || subscriber.email.toLowerCase().includes(normalizedEmail);
       const matchesDate = !this.dateFilter || subscriber.createdAt.slice(0, 10) === this.dateFilter;
 
       return matchesEmail && matchesDate;
-    });
+    }));
   }
 
   protected addSubscriber(): void {
     this.submitAttempted = true;
-    this.successMessage = '';
-    this.errorMessage = '';
+    this.successMessage.set('');
+    this.errorMessage.set('');
 
-    if (this.subscriberForm.invalid || this.isSubmitting) {
+    if (this.subscriberForm.invalid || this.isSubmitting()) {
       this.subscriberForm.markAllAsTouched();
       return;
     }
 
-    this.isSubmitting = true;
+    this.isSubmitting.set(true);
 
     this.subscriberService.create(this.subscriberForm.getRawValue()).subscribe({
       next: subscriber => {
-        this.subscribers = [subscriber, ...this.subscribers];
+        this.subscribers.set([subscriber, ...this.subscribers()]);
         this.filterSubscribers();
         this.subscriberForm.reset();
         this.submitAttempted = false;
-        this.isSubmitting = false;
-        this.successMessage = 'Başarıyla kaydedildi.';
+        this.isSubmitting.set(false);
+        this.successMessage.set('Başarıyla kaydedildi.');
       },
       error: () => {
-        this.isSubmitting = false;
-        this.errorMessage = 'Abone kaydedilemedi. E-posta adresi daha önce eklenmiş olabilir.';
+        this.isSubmitting.set(false);
+        this.errorMessage.set('Abone kaydedilemedi. E-posta adresi daha önce eklenmiş olabilir.');
       }
     });
   }
@@ -79,7 +79,7 @@ export class Subscribers implements OnInit {
 
     this.subscriberService.delete(subscriber.id).subscribe({
       next: () => {
-        this.subscribers = this.subscribers.filter(item => item.id !== subscriber.id);
+        this.subscribers.set(this.subscribers().filter(item => item.id !== subscriber.id));
         this.filterSubscribers();
       },
       error: error => {
@@ -96,18 +96,18 @@ export class Subscribers implements OnInit {
   }
 
   private loadSubscribers(): void {
-    this.isLoading = true;
-    this.errorMessage = '';
+    this.isLoading.set(true);
+    this.errorMessage.set('');
 
     this.subscriberService.getAll().subscribe({
       next: subscribers => {
-        this.subscribers = subscribers;
+        this.subscribers.set(subscribers);
         this.filterSubscribers();
-        this.isLoading = false;
+        this.isLoading.set(false);
       },
       error: () => {
-        this.isLoading = false;
-        this.errorMessage = 'Aboneler yüklenemedi.';
+        this.isLoading.set(false);
+        this.errorMessage.set('Aboneler yüklenemedi.');
       }
     });
   }

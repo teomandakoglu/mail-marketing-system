@@ -4,7 +4,7 @@
       <p class="eyebrow">Liste Yönetimi</p>
       <h2>Aboneler</h2>
     </div>
-    <span class="count">{{ filteredSubscribers.length }} kayıt</span>
+    <span class="count">{{ filteredSubscribers().length }} kayıt</span>
   </header>
 
   <section class="panel">
@@ -22,13 +22,13 @@
         <p class="field-error" *ngIf="showEmailError">Geçerli bir e-posta adresi giriniz.</p>
       </div>
 
-      <button class="primary-button" type="submit" [disabled]="isSubmitting">
-        {{ isSubmitting ? 'Kaydediliyor...' : 'Abone Ekle' }}
+      <button class="primary-button" type="submit" [disabled]="isSubmitting()">
+        {{ isSubmitting() ? 'Kaydediliyor...' : 'Abone Ekle' }}
       </button>
     </form>
 
-    <p class="success-message" *ngIf="successMessage">{{ successMessage }}</p>
-    <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
+    <p class="success-message" *ngIf="successMessage()">{{ successMessage() }}</p>
+    <p class="error-message" *ngIf="errorMessage()">{{ errorMessage() }}</p>
   </section>
 
   <section class="panel filters">
@@ -55,9 +55,9 @@
   </section>
 
   <section class="table-panel">
-    <div class="loading-state" *ngIf="isLoading">Aboneler yükleniyor...</div>
+    <div class="loading-state" *ngIf="isLoading()">Aboneler yükleniyor...</div>
 
-    <table *ngIf="!isLoading && filteredSubscribers.length > 0">
+    <table *ngIf="!isLoading() && filteredSubscribers().length > 0">
       <thead>
         <tr>
           <th>E-posta</th>
@@ -66,7 +66,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let subscriber of filteredSubscribers">
+        <tr *ngFor="let subscriber of filteredSubscribers()">
           <td>{{ subscriber.email }}</td>
           <td>{{ subscriber.createdAt | date: 'dd.MM.yyyy HH:mm' }}</td>
           <td class="actions-column">
@@ -76,7 +76,7 @@
       </tbody>
     </table>
 
-    <div class="empty-state" *ngIf="!isLoading && filteredSubscribers.length === 0">
+    <div class="empty-state" *ngIf="!isLoading() && filteredSubscribers().length === 0">
       Gösterilecek abone bulunamadı.
     </div>
   </section>

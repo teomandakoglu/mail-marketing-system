@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { QuillModule } from 'ngx-quill';
 import { finalize } from 'rxjs';
@@ -15,12 +15,12 @@ export class Templates implements OnInit {
   private readonly formBuilder = inject(FormBuilder);
   private readonly templateService = inject(TemplateService);
 
-  protected templates: TemplateDto[] = [];
-  protected isLoading = false;
-  protected isSubmitting = false;
+  protected readonly templates = signal<TemplateDto[]>([]);
+  protected readonly isLoading = signal(false);
+  protected readonly isSubmitting = signal(false);
   protected submitAttempted = false;
-  protected successMessage = '';
-  protected errorMessage = '';
+  protected readonly successMessage = signal('');
+  protected readonly errorMessage = signal('');
 
   protected readonly templateForm = this.formBuilder.nonNullable.group({
     title: ['', [Validators.required]],
@@ -43,28 +43,28 @@ export class Templates implements OnInit {
 
   protected addTemplate(): void {
     this.submitAttempted = true;
-    this.successMessage = '';
-    this.errorMessage = '';
+    this.successMessage.set('');
+    this.errorMessage.set('');
 
-    if (this.templateForm.invalid || this.isSubmitting) {
+    if (this.templateForm.invalid || this.isSubmitting()) {
       this.templateForm.markAllAsTouched();
-      this.errorMessage = 'Başlık ve içerik alanları zorunludur.';
+      this.errorMessage.set('Başlık ve içerik alanları zorunludur.');
       return;
     }
 
-    this.isSubmitting = true;
+    this.isSubmitting.set(true);
 
     this.templateService.create(this.templateForm.getRawValue()).subscribe({
       next: template => {
-        this.templates = [template, ...this.templates];
+        this.templates.set([template, ...this.templates()]);
         this.templateForm.reset();
         this.submitAttempted = false;
-        this.isSubmitting = false;
-        this.successMessage = 'Şablon başarıyla kaydedildi.';
+        this.isSubmitting.set(false);
+        this.successMessage.set('Şablon başarıyla kaydedildi.');
       },
       error: () => {
-        this.isSubmitting = false;
-        this.errorMessage = 'Şablon kaydedilemedi.';
+        this.isSubmitting.set(false);
+        this.errorMessage.set('Şablon kaydedilemedi.');
       }
     });
   }
@@ -78,7 +78,7 @@ export class Templates implements OnInit {
 
     this.templateService.delete(template.id).subscribe({
       next: () => {
-        this.templates = this.templates.filter(item => item.id !== template.id);
+        this.templates.set(this.templates().filter(item => item.id !== template.id));
       },
       error: error => {
         const message = error?.error?.message ?? error?.error ?? 'Şablon silinemedi. Daha önce mail gönderiminde kullanılmış olabilir.';
@@ -96,9 +96,9 @@ export class Templates implements OnInit {
       isActive: nextStatus
     }).subscribe({
       next: () => {
-        this.templates = this.templates.map(item =>
+        this.templates.set(this.templates().map(item =>
           item.id === template.id ? { ...item, isActive: nextStatus } : item
-        );
+        ));
       },
       error: () => {
         window.alert('Şablon durumu güncellenemedi.');
@@ -119,19 +119,19 @@ export class Templates implements OnInit {
   }
 
   private loadTemplates(): void {
-    this.isLoading = true;
-    this.errorMessage = '';
+    this.isLoading.set(true);
+    this.errorMessage.set('');
 
     this.templateService.getAll().pipe(
       finalize(() => {
-        this.isLoading = false;
+        this.isLoading.set(false);
       })
     ).subscribe({
       next: templates => {
-        this.templates = templates;
+        this.templates.set(templates);
       },
       error: () => {
-        this.errorMessage = 'Şablonlar yüklenemedi.';
+        this.errorMessage.set('Şablonlar yüklenemedi.');
       }
     });
   }

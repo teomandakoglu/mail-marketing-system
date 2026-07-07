@@ -4,7 +4,7 @@
       <p class="eyebrow">İçerik Yönetimi</p>
       <h2>Şablonlar</h2>
     </div>
-    <span class="count">{{ templates.length }} kayıt</span>
+    <span class="count">{{ templates().length }} kayıt</span>
   </header>
 
   <section class="panel">
@@ -34,19 +34,19 @@
         <p class="field-error" *ngIf="showContentError">İçerik alanı zorunludur.</p>
       </div>
 
-      <button class="primary-button" type="submit" [disabled]="isSubmitting">
-        {{ isSubmitting ? 'Kaydediliyor...' : 'Şablon Ekle' }}
+      <button class="primary-button" type="submit" [disabled]="isSubmitting()">
+        {{ isSubmitting() ? 'Kaydediliyor...' : 'Şablon Ekle' }}
       </button>
     </form>
 
-    <p class="success-message" *ngIf="successMessage">{{ successMessage }}</p>
-    <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
+    <p class="success-message" *ngIf="successMessage()">{{ successMessage() }}</p>
+    <p class="error-message" *ngIf="errorMessage()">{{ errorMessage() }}</p>
   </section>
 
   <section class="table-panel">
-    <div class="loading-state" *ngIf="isLoading">Şablonlar yükleniyor...</div>
+    <div class="loading-state" *ngIf="isLoading()">Şablonlar yükleniyor...</div>
 
-    <table *ngIf="!isLoading && templates.length > 0">
+    <table *ngIf="!isLoading() && templates().length > 0">
       <thead>
         <tr>
           <th>Şablon Başlığı</th>
@@ -56,7 +56,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let template of templates">
+        <tr *ngFor="let template of templates()">
           <td>{{ template.title }}</td>
           <td>{{ template.createdAt | date: 'dd.MM.yyyy HH:mm' }}</td>
           <td>
@@ -76,7 +76,7 @@
       </tbody>
     </table>
 
-    <div class="empty-state" *ngIf="!isLoading && templates.length === 0">
+    <div class="empty-state" *ngIf="!isLoading() && templates().length === 0">
       Gösterilecek şablon bulunamadı.
     </div>
   </section>
