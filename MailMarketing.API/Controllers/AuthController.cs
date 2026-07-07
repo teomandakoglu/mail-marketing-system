@@ -2,12 +2,13 @@ using MailMarketing.Business.DTOs.Auth;
 using MailMarketing.Business.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.RegularExpressions;
 
 namespace MailMarketing.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthController : ControllerBase
+public partial class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
 
@@ -19,6 +20,11 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterDto registerDto)
     {
+        if (!PasswordRegex().IsMatch(registerDto.Password))
+        {
+            return BadRequest("Parola en az 8 karakter, büyük harf, küçük harf ve rakam içermelidir.");
+        }
+
         var result = await _authService.RegisterAsync(registerDto);
 
         return result ? Ok("User registered successfully.") : BadRequest("Email is already registered.");
@@ -49,4 +55,7 @@ public class AuthController : ControllerBase
 
         return result ? Ok("Parola güncellendi.") : NotFound("Kullanıcı bulunamadı");
     }
+
+    [GeneratedRegex("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$")]
+    private static partial Regex PasswordRegex();
 }

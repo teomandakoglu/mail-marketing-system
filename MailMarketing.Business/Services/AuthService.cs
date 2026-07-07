@@ -91,6 +91,13 @@ public class AuthService : IAuthService
         return true;
     }
 
+    public async Task<string?> GenerateTokenForUserAsync(int userId)
+    {
+        var user = await _context.Users.SingleOrDefaultAsync(user => user.Id == userId && user.IsActive);
+
+        return user is null ? null : GenerateJwtToken(user);
+    }
+
     private string GenerateJwtToken(User user)
     {
         var jwtKey = _configuration["Jwt:Key"];

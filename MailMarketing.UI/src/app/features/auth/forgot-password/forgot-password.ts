@@ -75,6 +75,7 @@ export class ForgotPassword {
       next: () => {
         this.isSubmitting.set(false);
         this.passwordForm.reset();
+        this.passwordSubmitted = false;
         this.successMessage.set('Parolanız başarıyla güncellendi.');
       },
       error: error => {
@@ -87,19 +88,19 @@ export class ForgotPassword {
   protected hasEmailError(): boolean {
     const control = this.emailForm.controls.email;
 
-    return control.invalid && (control.touched || this.emailSubmitted);
+    return control.invalid && (control.dirty || control.touched);
   }
 
   protected hasPasswordError(): boolean {
     const control = this.passwordForm.controls.password;
 
-    return control.invalid && (control.touched || this.passwordSubmitted);
+    return control.invalid && (control.dirty || control.touched);
   }
 
   protected hasConfirmPasswordError(): boolean {
     const control = this.passwordForm.controls.confirmPassword;
 
-    return (control.invalid || this.passwordForm.hasError('passwordMismatch')) && (control.touched || this.passwordSubmitted);
+    return (control.invalid || this.passwordForm.hasError('passwordMismatch')) && (control.dirty || control.touched);
   }
 
   private passwordsMatchValidator(control: AbstractControl): ValidationErrors | null {

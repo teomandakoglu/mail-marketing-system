@@ -11,4 +11,6 @@ public interface IAuthService
     Task<bool> CheckEmailAsync(CheckEmailDto checkEmailDto);
 
     Task<bool> ResetPasswordAsync(ResetPasswordDto resetPasswordDto);
+
+    Task<string?> GenerateTokenForUserAsync(int userId);
 }

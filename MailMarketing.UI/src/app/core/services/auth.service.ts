@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { Observable, map, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
@@ -32,13 +32,14 @@ export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiUrl}/auth`;
   private readonly tokenKey = 'mailMarketingToken';
+  readonly tokenChanged = signal<string | null>(this.getToken());
 
   login(credentials: LoginDto): Observable<string> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
       map(response => response.token ?? response.Token ?? ''),
       tap(token => {
         if (token) {
-          localStorage.setItem(this.tokenKey, token);
+          this.updateToken(token);
         }
       })
     );
@@ -58,10 +59,16 @@ export class AuthService {
 
   logout(): void {
     localStorage.removeItem(this.tokenKey);
+    this.tokenChanged.set(null);
   }
 
   getToken(): string | null {
     return localStorage.getItem(this.tokenKey);
+  }
+
+  updateToken(newToken: string): void {
+    localStorage.setItem(this.tokenKey, newToken);
+    this.tokenChanged.set(newToken);
   }
 
   getCurrentUserDisplayName(): string {

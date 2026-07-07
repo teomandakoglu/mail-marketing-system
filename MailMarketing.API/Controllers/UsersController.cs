@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using MailMarketing.Business.DTOs.Users;
+using MailMarketing.Business.Services;
 using MailMarketing.Core.Utilities.Security;
 using MailMarketing.DataAccess.Contexts;
 using Microsoft.AspNetCore.Authorization;
@@ -15,11 +16,16 @@ public class UsersController : ControllerBase
 {
     private readonly MailMarketingDbContext _context;
     private readonly IEncryptionService _encryptionService;
+    private readonly IAuthService _authService;
 
-    public UsersController(MailMarketingDbContext context, IEncryptionService encryptionService)
+    public UsersController(
+        MailMarketingDbContext context,
+        IEncryptionService encryptionService,
+        IAuthService authService)
     {
         _context = context;
         _encryptionService = encryptionService;
+        _authService = authService;
     }
 
     [HttpGet("profile")]
@@ -66,8 +72,9 @@ public class UsersController : ControllerBase
         user.EncryptedPassword = _encryptionService.Encrypt(updateUserProfileDto.Password);
 
         await _context.SaveChangesAsync();
+        var token = await _authService.GenerateTokenForUserAsync(user.Id);
 
-        return Ok("Profil güncellendi.");
+        return token is null ? Unauthorized() : Ok(new { token });
     }
 
     private int GetCurrentUserId()
