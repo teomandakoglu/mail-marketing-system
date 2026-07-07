@@ -50,4 +50,40 @@ export class AuthService {
   getToken(): string | null {
     return localStorage.getItem(this.tokenKey);
   }
+
+  getCurrentUserDisplayName(): string {
+    const payload = this.getTokenPayload();
+    const name = payload?.['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'];
+    const email = payload?.['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'];
+
+    return name ?? email ?? 'Kullanıcı';
+  }
+
+  private getTokenPayload(): Record<string, string> | null {
+    const token = this.getToken();
+
+    if (!token) {
+      return null;
+    }
+
+    const [, payload] = token.split('.');
+
+    if (!payload) {
+      return null;
+    }
+
+    try {
+      const normalizedPayload = payload.replace(/-/g, '+').replace(/_/g, '/');
+      const decodedPayload = decodeURIComponent(
+        atob(normalizedPayload)
+          .split('')
+          .map(character => `%${(`00${character.charCodeAt(0).toString(16)}`).slice(-2)}`)
+          .join('')
+      );
+
+      return JSON.parse(decodedPayload) as Record<string, string>;
+    } catch {
+      return null;
+    }
+  }
 }

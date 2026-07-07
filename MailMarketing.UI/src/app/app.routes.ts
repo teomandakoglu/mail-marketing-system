@@ -18,8 +18,12 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'subscribers',
+        redirectTo: 'dashboard',
         pathMatch: 'full'
+      },
+      {
+        path: 'dashboard',
+        loadComponent: () => import('./features/dashboard/dashboard').then(component => component.Dashboard)
       },
       {
         path: 'subscribers',

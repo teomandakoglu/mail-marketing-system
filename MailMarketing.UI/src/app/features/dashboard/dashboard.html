@@ -1,0 +1,28 @@
+<section class="dashboard-page">
+  <header class="welcome-panel">
+    <div>
+      <p class="eyebrow">Ana Sayfa</p>
+      <h2>Hoş Geldiniz, {{ currentUser() }}</h2>
+    </div>
+    <span class="status-pill">{{ isLoading() ? 'Yükleniyor' : 'Güncel' }}</span>
+  </header>
+
+  <p class="error-message" *ngIf="errorMessage()">{{ errorMessage() }}</p>
+
+  <section class="stats-grid" aria-label="Dashboard istatistikleri">
+    <article class="stat-card">
+      <span class="stat-label">Kayıtlı Abone Sayısı</span>
+      <strong>{{ totalSubscribers() }}</strong>
+    </article>
+
+    <article class="stat-card">
+      <span class="stat-label">Kayıtlı Şablon Sayısı</span>
+      <strong>{{ totalTemplates() }}</strong>
+    </article>
+
+    <article class="stat-card">
+      <span class="stat-label">Toplam Mail Gönderimi</span>
+      <strong>{{ totalSentMails() }}</strong>
+    </article>
+  </section>
+</section>
