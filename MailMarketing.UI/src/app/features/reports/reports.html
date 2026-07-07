@@ -1,3 +1,77 @@
-<section class="page-panel">
-  <h2>Raporlar sayfası çalışıyor</h2>
+<section class="reports-page">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">Gönderim Analizi</p>
+      <h2>Raporlar</h2>
+    </div>
+    <span class="count">{{ reports().length }} kayıt</span>
+  </header>
+
+  <section class="filter-card">
+    <div class="field">
+      <label for="templateFilter">Şablon Seçimi</label>
+      <select id="templateFilter" name="templateFilter" [(ngModel)]="selectedTemplateId">
+        <option [ngValue]="null">Şablon seçin</option>
+        <option *ngFor="let template of templates()" [ngValue]="template.id">
+          {{ template.title }}
+        </option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="startDate">Başlangıç Tarihi</label>
+      <input id="startDate" name="startDate" type="date" [(ngModel)]="startDate" />
+    </div>
+
+    <div class="field">
+      <label for="endDate">Bitiş Tarihi</label>
+      <input id="endDate" name="endDate" type="date" [(ngModel)]="endDate" />
+    </div>
+
+    <div class="field">
+      <label for="statusFilter">Durum</label>
+      <select id="statusFilter" name="statusFilter" [(ngModel)]="status">
+        <option value="">Tümü</option>
+        <option value="Success">Başarılı</option>
+        <option value="Failed">Başarısız</option>
+      </select>
+    </div>
+
+    <button class="primary-button" type="button" [disabled]="isLoadingReports()" (click)="loadReports()">
+      {{ isLoadingReports() ? 'Yükleniyor...' : 'Raporu Getir' }}
+    </button>
+  </section>
+
+  <p class="error-message" *ngIf="errorMessage()">{{ errorMessage() }}</p>
+
+  <section class="table-panel">
+    <div class="loading-state" *ngIf="isLoadingTemplates() || isLoadingReports()">Rapor verileri yükleniyor...</div>
+
+    <table *ngIf="!isLoadingTemplates() && !isLoadingReports() && reports().length > 0">
+      <thead>
+        <tr>
+          <th>E-posta</th>
+          <th>Gönderim Zamanı</th>
+          <th>Durum</th>
+          <th>Açıklama</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let report of reports()">
+          <td>{{ report.subscriberEmail }}</td>
+          <td>{{ report.sentAt | date: 'dd.MM.yyyy HH:mm' }}</td>
+          <td>
+            <span class="status-badge" [class.failed]="report.status === 'Failed'">
+              {{ report.status === 'Success' ? 'Başarılı' : 'Başarısız' }}
+            </span>
+          </td>
+          <td>{{ report.errorMessage || '-' }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="empty-state" *ngIf="!isLoadingTemplates() && !isLoadingReports() && reports().length === 0">
+      Bu kriterlere uygun log bulunamadı.
+    </div>
+  </section>
 </section>
