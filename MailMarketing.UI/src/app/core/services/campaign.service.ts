@@ -18,4 +18,8 @@ export class CampaignService {
   send(campaign: SendCampaignDto): Observable<unknown> {
     return this.http.post(`${this.apiUrl}/send`, campaign);
   }
+
+  sendCampaign(campaign: SendCampaignDto): Observable<unknown> {
+    return this.send(campaign);
+  }
 }

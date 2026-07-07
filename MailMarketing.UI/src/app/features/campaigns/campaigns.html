@@ -1,3 +1,72 @@
-<section class="page-panel">
-  <h2>Kampanya Gönderimi sayfası çalışıyor</h2>
+<section class="campaigns-page">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">Gönderim Yönetimi</p>
+      <h2>Kampanya Gönderimi</h2>
+    </div>
+    <span class="count">{{ selectedSubscriberIds.size }} seçili</span>
+  </header>
+
+  <section class="panel template-panel">
+    <div class="field">
+      <label for="templateSelect">Kullanılacak Şablonu Seçin</label>
+      <select id="templateSelect" name="templateSelect" [(ngModel)]="selectedTemplateId">
+        <option [ngValue]="null">Şablon seçin</option>
+        <option *ngFor="let template of activeTemplates()" [ngValue]="template.id">
+          {{ template.title }}
+        </option>
+      </select>
+    </div>
+  </section>
+
+  <section class="table-panel">
+    <div class="table-toolbar">
+      <div>
+        <p class="eyebrow">Hedef Kitle</p>
+        <h3>Aboneler</h3>
+      </div>
+
+      <div class="toolbar-actions">
+        <button class="secondary-button" type="button" (click)="toggleAllSubscribers()">
+          {{ areAllSubscribersSelected() ? 'Tümünü Kaldır' : 'Tümünü Seç' }}
+        </button>
+        <button class="primary-button" type="button" [disabled]="isSending()" (click)="sendCampaign()">
+          {{ isSending() ? 'Kuyruğa Alınıyor...' : 'Kampanyayı Gönder' }}
+        </button>
+      </div>
+    </div>
+
+    <p class="success-message" *ngIf="successMessage()">{{ successMessage() }}</p>
+    <p class="error-message" *ngIf="errorMessage()">{{ errorMessage() }}</p>
+
+    <div class="loading-state" *ngIf="isLoading()">Kampanya verileri yükleniyor...</div>
+
+    <table *ngIf="!isLoading() && subscribers().length > 0">
+      <thead>
+        <tr>
+          <th class="selection-column">Seçim</th>
+          <th>E-posta</th>
+          <th>Kayıt Zamanı</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let subscriber of subscribers()">
+          <td class="selection-column">
+            <input
+              type="checkbox"
+              [checked]="isSubscriberSelected(subscriber.id)"
+              (change)="toggleSubscriberSelection(subscriber.id, $any($event.target).checked)"
+              [attr.aria-label]="subscriber.email + ' seç'"
+            />
+          </td>
+          <td>{{ subscriber.email }}</td>
+          <td>{{ subscriber.createdAt | date: 'dd.MM.yyyy HH:mm' }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="empty-state" *ngIf="!isLoading() && subscribers().length === 0">
+      Gönderim yapılacak abone bulunamadı.
+    </div>
+  </section>
 </section>
