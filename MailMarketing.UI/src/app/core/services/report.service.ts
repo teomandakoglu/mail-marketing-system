@@ -41,10 +41,22 @@ export class ReportService {
       }
 
       if (value !== null && value !== undefined && value !== '') {
-        params = params.set(key, String(value));
+        params = params.set(key, this.formatQueryValue(key, String(value)));
       }
     });
 
     return this.http.get<MailLogDto[]>(this.apiUrl, { params });
+  }
+
+  private formatQueryValue(key: string, value: string): string {
+    if (key === 'startDate') {
+      return `${value}T00:00:00.000Z`;
+    }
+
+    if (key === 'endDate') {
+      return `${value}T23:59:59.999Z`;
+    }
+
+    return value;
   }
 }
