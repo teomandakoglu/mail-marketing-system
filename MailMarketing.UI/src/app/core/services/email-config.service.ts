@@ -31,7 +31,15 @@ export class EmailConfigService {
     return this.http.get<EmailConfigDto>(this.apiUrl);
   }
 
+  getConfig(): Observable<EmailConfigDto> {
+    return this.getCurrent();
+  }
+
   createOrUpdate(config: CreateUpdateEmailConfigDto): Observable<EmailConfigDto> {
     return this.http.post<EmailConfigDto>(this.apiUrl, config);
+  }
+
+  createOrUpdateConfig(config: CreateUpdateEmailConfigDto): Observable<EmailConfigDto> {
+    return this.createOrUpdate(config);
   }
 }

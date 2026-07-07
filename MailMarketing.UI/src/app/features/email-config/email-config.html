@@ -1,3 +1,86 @@
-<section class="page-panel">
-  <h2>SMTP Ayarları sayfası çalışıyor</h2>
+<section class="email-config-page">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">Sistem Tanımı</p>
+      <h2>SMTP Ayarları</h2>
+    </div>
+  </header>
+
+  <section class="settings-card">
+    <div class="card-header">
+      <div>
+        <p class="eyebrow">Sistem Ayarları</p>
+        <h3>Mail Sunucusu</h3>
+      </div>
+      <span class="status-pill">{{ isLoading() ? 'Yükleniyor' : 'Hazır' }}</span>
+    </div>
+
+    <form class="config-form" [formGroup]="configForm" (ngSubmit)="onSubmit()" novalidate>
+      <div class="field">
+        <label for="mailServer">Sunucu Adresi</label>
+        <input
+          id="mailServer"
+          name="mailServer"
+          type="text"
+          formControlName="mailServer"
+          placeholder="localhost"
+          [class.invalid]="hasError('mailServer')"
+        />
+        <p class="field-error" *ngIf="hasError('mailServer')">Sunucu adresi zorunludur.</p>
+      </div>
+
+      <div class="field">
+        <label for="smtpPort">Port</label>
+        <input
+          id="smtpPort"
+          name="smtpPort"
+          type="number"
+          formControlName="smtpPort"
+          placeholder="587"
+          [class.invalid]="hasError('smtpPort')"
+        />
+        <p class="field-error" *ngIf="hasError('smtpPort')">Port numarası zorunludur.</p>
+      </div>
+
+      <label class="checkbox-field" for="useSsl">
+        <input id="useSsl" name="useSsl" type="checkbox" formControlName="useSsl" />
+        <span>SSL Kullan</span>
+      </label>
+
+      <div class="field">
+        <label for="emailAddress">E-posta</label>
+        <input
+          id="emailAddress"
+          name="emailAddress"
+          type="email"
+          formControlName="emailAddress"
+          placeholder="pazarlama@firma.com"
+          autocomplete="email"
+          [class.invalid]="hasError('emailAddress')"
+        />
+        <p class="field-error" *ngIf="hasError('emailAddress')">Geçerli bir e-posta adresi giriniz.</p>
+      </div>
+
+      <div class="field">
+        <label for="password">Parola</label>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          formControlName="password"
+          placeholder="SMTP parolası"
+          autocomplete="current-password"
+          [class.invalid]="hasError('password')"
+        />
+        <p class="field-error" *ngIf="hasError('password')">Parola zorunludur.</p>
+      </div>
+
+      <button class="primary-button" type="submit">
+        {{ isSubmitting() ? 'Kaydediliyor...' : 'Ayarları Kaydet' }}
+      </button>
+    </form>
+
+    <p class="success-message" *ngIf="successMessage()">{{ successMessage() }}</p>
+    <p class="error-message" *ngIf="errorMessage()">{{ errorMessage() }}</p>
+  </section>
 </section>
