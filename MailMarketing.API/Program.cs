@@ -21,6 +21,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ISubscriberService, SubscriberService>();
 builder.Services.AddScoped<ITemplateService, TemplateService>();
 builder.Services.AddScoped<IEmailConfigService, EmailConfigService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddSingleton<IMailQueue, MailQueue>();
 builder.Services.AddScoped<IMailSenderService, MailSenderService>();
 builder.Services.AddScoped<IMailLogService, MailLogService>();
