@@ -28,12 +28,14 @@ public class MailLogService : IMailLogService
 
         if (filter.StartDate.HasValue)
         {
-            query = query.Where(mailLog => mailLog.SentAt >= filter.StartDate.Value);
+            var startDateUtc = DateTime.SpecifyKind(filter.StartDate.Value.Date, DateTimeKind.Utc);
+            query = query.Where(mailLog => mailLog.SentAt >= startDateUtc);
         }
 
         if (filter.EndDate.HasValue)
         {
-            query = query.Where(mailLog => mailLog.SentAt <= filter.EndDate.Value);
+            var endDateUtc = DateTime.SpecifyKind(filter.EndDate.Value.Date.AddDays(1).AddTicks(-1), DateTimeKind.Utc);
+            query = query.Where(mailLog => mailLog.SentAt <= endDateUtc);
         }
 
         if (!string.IsNullOrWhiteSpace(filter.Status))
