@@ -1,3 +1,81 @@
-<section class="page-panel">
-  <h2>Şablonlar sayfası çalışıyor</h2>
+<section class="templates-page">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">İçerik Yönetimi</p>
+      <h2>Şablonlar</h2>
+    </div>
+    <span class="count">{{ templates.length }} kayıt</span>
+  </header>
+
+  <section class="panel">
+    <form class="template-form" [formGroup]="templateForm" (ngSubmit)="addTemplate()" novalidate>
+      <div class="field">
+        <label for="template-title">Şablon Başlığı</label>
+        <input
+          id="template-title"
+          type="text"
+          formControlName="title"
+          placeholder="Kampanya başlığını yazın"
+          [class.invalid]="showTitleError"
+        />
+        <p class="field-error" *ngIf="showTitleError">Başlık alanı zorunludur.</p>
+      </div>
+
+      <div class="field editor-field">
+        <label for="template-content">İçerik</label>
+        <quill-editor
+          id="template-content"
+          formControlName="content"
+          [modules]="editorModules"
+          placeholder="Mail içeriğini yazın"
+        ></quill-editor>
+        <p class="field-error" *ngIf="showContentError">İçerik alanı zorunludur.</p>
+      </div>
+
+      <button class="primary-button" type="submit" [disabled]="isSubmitting">
+        {{ isSubmitting ? 'Kaydediliyor...' : 'Şablon Ekle' }}
+      </button>
+    </form>
+
+    <p class="success-message" *ngIf="successMessage">{{ successMessage }}</p>
+    <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
+  </section>
+
+  <section class="table-panel">
+    <div class="loading-state" *ngIf="isLoading">Şablonlar yükleniyor...</div>
+
+    <table *ngIf="!isLoading && templates.length > 0">
+      <thead>
+        <tr>
+          <th>Şablon Başlığı</th>
+          <th>Kayıt Zamanı</th>
+          <th>Durum</th>
+          <th class="actions-column">İşlemler</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let template of templates">
+          <td>{{ template.title }}</td>
+          <td>{{ template.createdAt | date: 'dd.MM.yyyy HH:mm' }}</td>
+          <td>
+            <span class="status-badge" [class.inactive]="!template.isActive">
+              {{ template.isActive ? 'Aktif' : 'Pasif' }}
+            </span>
+          </td>
+          <td class="actions-column">
+            <div class="actions">
+              <button class="secondary-button" type="button" (click)="toggleStatus(template)">
+                {{ template.isActive ? 'Pasife Al' : 'Aktif Et' }}
+              </button>
+              <button class="danger-button" type="button" (click)="deleteTemplate(template)">Sil</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="empty-state" *ngIf="!isLoading && templates.length === 0">
+      Gösterilecek şablon bulunamadı.
+    </div>
+  </section>
 </section>

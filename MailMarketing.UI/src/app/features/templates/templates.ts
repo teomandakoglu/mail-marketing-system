@@ -1,8 +1,135 @@
-import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject } from '@angular/core';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { QuillModule } from 'ngx-quill';
+import { TemplateDto, TemplateService } from '../../core/services/template.service';
 
 @Component({
   selector: 'app-templates',
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, QuillModule],
   templateUrl: './templates.html',
   styleUrl: './templates.scss'
 })
-export class Templates {}
+export class Templates implements OnInit {
+  private readonly formBuilder = inject(FormBuilder);
+  private readonly templateService = inject(TemplateService);
+
+  protected templates: TemplateDto[] = [];
+  protected isLoading = false;
+  protected isSubmitting = false;
+  protected submitAttempted = false;
+  protected successMessage = '';
+  protected errorMessage = '';
+
+  protected readonly templateForm = this.formBuilder.nonNullable.group({
+    title: ['', [Validators.required]],
+    content: ['', [Validators.required]]
+  });
+
+  protected readonly editorModules = {
+    toolbar: [
+      ['bold', 'italic', 'underline'],
+      [{ header: [1, 2, 3, false] }],
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      ['link'],
+      ['clean']
+    ]
+  };
+
+  ngOnInit(): void {
+    this.loadTemplates();
+  }
+
+  protected addTemplate(): void {
+    this.submitAttempted = true;
+    this.successMessage = '';
+    this.errorMessage = '';
+
+    if (this.templateForm.invalid || this.isSubmitting) {
+      this.templateForm.markAllAsTouched();
+      this.errorMessage = 'Başlık ve içerik alanları zorunludur.';
+      return;
+    }
+
+    this.isSubmitting = true;
+
+    this.templateService.create(this.templateForm.getRawValue()).subscribe({
+      next: template => {
+        this.templates = [template, ...this.templates];
+        this.templateForm.reset();
+        this.submitAttempted = false;
+        this.isSubmitting = false;
+        this.successMessage = 'Şablon başarıyla kaydedildi.';
+      },
+      error: () => {
+        this.isSubmitting = false;
+        this.errorMessage = 'Şablon kaydedilemedi.';
+      }
+    });
+  }
+
+  protected deleteTemplate(template: TemplateDto): void {
+    const confirmed = window.confirm('Kaydı silmek istediğinize emin misiniz?');
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.templateService.delete(template.id).subscribe({
+      next: () => {
+        this.templates = this.templates.filter(item => item.id !== template.id);
+      },
+      error: error => {
+        const message = error?.error?.message ?? error?.error ?? 'Şablon silinemedi. Daha önce mail gönderiminde kullanılmış olabilir.';
+        window.alert(message);
+      }
+    });
+  }
+
+  protected toggleStatus(template: TemplateDto): void {
+    const nextStatus = !template.isActive;
+
+    this.templateService.update(template.id, {
+      title: template.title,
+      content: template.content,
+      isActive: nextStatus
+    }).subscribe({
+      next: () => {
+        this.templates = this.templates.map(item =>
+          item.id === template.id ? { ...item, isActive: nextStatus } : item
+        );
+      },
+      error: () => {
+        window.alert('Şablon durumu güncellenemedi.');
+      }
+    });
+  }
+
+  protected get showTitleError(): boolean {
+    const control = this.templateForm.controls.title;
+
+    return control.invalid && (control.touched || this.submitAttempted);
+  }
+
+  protected get showContentError(): boolean {
+    const control = this.templateForm.controls.content;
+
+    return control.invalid && (control.touched || this.submitAttempted);
+  }
+
+  private loadTemplates(): void {
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    this.templateService.getAll().subscribe({
+      next: templates => {
+        this.templates = templates;
+        this.isLoading = false;
+      },
+      error: () => {
+        this.isLoading = false;
+        this.errorMessage = 'Şablonlar yüklenemedi.';
+      }
+    });
+  }
+}
