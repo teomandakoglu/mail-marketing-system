@@ -15,6 +15,11 @@ export interface RegisterDto {
   password: string;
 }
 
+export interface ResetPasswordDto {
+  email: string;
+  newPassword: string;
+}
+
 interface LoginResponse {
   token?: string;
   Token?: string;
@@ -41,6 +46,14 @@ export class AuthService {
 
   register(user: RegisterDto): Observable<unknown> {
     return this.http.post(`${this.apiUrl}/register`, user, { responseType: 'text' });
+  }
+
+  checkEmail(email: string): Observable<unknown> {
+    return this.http.post(`${this.apiUrl}/check-email`, { email }, { responseType: 'text' });
+  }
+
+  resetPassword(dto: ResetPasswordDto): Observable<unknown> {
+    return this.http.post(`${this.apiUrl}/reset-password`, dto, { responseType: 'text' });
   }
 
   logout(): void {

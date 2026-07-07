@@ -1,0 +1,44 @@
+<section class="profile-page">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">Hesap Yönetimi</p>
+      <h2>Profil</h2>
+    </div>
+    <span class="status-pill">{{ isLoading() ? 'Yükleniyor' : 'Hazır' }}</span>
+  </header>
+
+  <section class="profile-card">
+    <form class="profile-form" [formGroup]="profileForm" (ngSubmit)="saveProfile()" novalidate>
+      <div class="field">
+        <label for="firstName">Ad</label>
+        <input id="firstName" type="text" formControlName="firstName" [class.invalid]="hasError('firstName')" />
+        <p class="field-error" *ngIf="hasError('firstName')">Ad zorunludur.</p>
+      </div>
+
+      <div class="field">
+        <label for="lastName">Soyad</label>
+        <input id="lastName" type="text" formControlName="lastName" [class.invalid]="hasError('lastName')" />
+        <p class="field-error" *ngIf="hasError('lastName')">Soyad zorunludur.</p>
+      </div>
+
+      <div class="field">
+        <label for="email">Mail</label>
+        <input id="email" type="email" formControlName="email" autocomplete="email" [class.invalid]="hasError('email')" />
+        <p class="field-error" *ngIf="hasError('email')">Geçerli bir mail adresi giriniz.</p>
+      </div>
+
+      <div class="field">
+        <label for="password">Parola</label>
+        <input id="password" type="password" formControlName="password" autocomplete="new-password" [class.invalid]="hasError('password')" />
+        <p class="field-error" *ngIf="hasError('password')">Parola en az 8 karakter, büyük harf, küçük harf ve rakam içermelidir.</p>
+      </div>
+
+      <button type="submit" [disabled]="isSubmitting()">
+        {{ isSubmitting() ? 'Kaydediliyor...' : 'Profili Kaydet' }}
+      </button>
+    </form>
+
+    <p class="success-message" *ngIf="successMessage()">{{ successMessage() }}</p>
+    <p class="error-message" *ngIf="errorMessage()">{{ errorMessage() }}</p>
+  </section>
+</section>

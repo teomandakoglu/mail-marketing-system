@@ -12,6 +12,10 @@ export const routes: Routes = [
     loadComponent: () => import('./features/auth/register/register').then(component => component.Register)
   },
   {
+    path: 'auth/forgot-password',
+    loadComponent: () => import('./features/auth/forgot-password/forgot-password').then(component => component.ForgotPassword)
+  },
+  {
     path: '',
     loadComponent: () => import('./features/landing/landing').then(component => component.Landing)
   },
@@ -48,6 +52,10 @@ export const routes: Routes = [
       {
         path: 'reports',
         loadComponent: () => import('./features/reports/reports').then(component => component.Reports)
+      },
+      {
+        path: 'profile',
+        loadComponent: () => import('./features/profile/profile').then(component => component.Profile)
       }
     ]
   },

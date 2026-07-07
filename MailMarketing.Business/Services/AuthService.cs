@@ -68,6 +68,29 @@ public class AuthService : IAuthService
         return decryptedPassword == loginDto.Password ? GenerateJwtToken(user) : null;
     }
 
+    public async Task<bool> CheckEmailAsync(CheckEmailDto checkEmailDto)
+    {
+        var normalizedEmail = checkEmailDto.Email.Trim().ToLowerInvariant();
+
+        return await _context.Users.AnyAsync(user => user.Email == normalizedEmail && user.IsActive);
+    }
+
+    public async Task<bool> ResetPasswordAsync(ResetPasswordDto resetPasswordDto)
+    {
+        var normalizedEmail = resetPasswordDto.Email.Trim().ToLowerInvariant();
+        var user = await _context.Users.SingleOrDefaultAsync(user => user.Email == normalizedEmail && user.IsActive);
+
+        if (user is null)
+        {
+            return false;
+        }
+
+        user.EncryptedPassword = _encryptionService.Encrypt(resetPasswordDto.NewPassword);
+        await _context.SaveChangesAsync();
+
+        return true;
+    }
+
     private string GenerateJwtToken(User user)
     {
         var jwtKey = _configuration["Jwt:Key"];
