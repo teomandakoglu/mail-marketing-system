@@ -43,17 +43,18 @@ h2 {
 }
 
 .panel {
-  padding: 20px;
+  padding: 24px;
 }
 
 .template-form {
   display: grid;
-  gap: 18px;
+  gap: 24px;
 }
 
 .field {
   display: grid;
-  gap: 8px;
+  gap: 10px;
+  min-width: 0;
 }
 
 label {
@@ -124,7 +125,7 @@ input.invalid {
 .primary-button {
   display: block;
   justify-self: start;
-  margin-top: 30px;
+  margin-top: 36px;
   padding: 0 18px;
   background: #0f9f8e;
 }
@@ -255,7 +256,7 @@ tbody tr:last-child td {
 .actions {
   display: flex;
   justify-content: flex-end;
-  gap: 8px;
+  gap: 12px;
 }
 
 .loading-state,

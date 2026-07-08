@@ -43,30 +43,30 @@ h2 {
 }
 
 .panel {
-  padding: 20px;
+  padding: 24px;
 }
 
-.add-form,
-.filters {
-  display: flex;
-  align-items: flex-end;
-  gap: 24px;
+.add-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 32px;
 }
 
 .filters {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 32px;
 }
 
 .add-form .field {
-  flex: 1 1 320px;
   min-width: 0;
 }
 
 .field {
   display: grid;
-  gap: 8px;
+  gap: 10px;
+  min-width: 0;
 }
 
 label {
@@ -135,8 +135,7 @@ input.invalid {
 
 .primary-button {
   align-self: flex-end;
-  flex: 0 0 auto;
-  min-width: 148px;
+  min-width: 160px;
   padding: 0 18px;
   background: #0f9f8e;
   white-space: nowrap;
@@ -219,7 +218,7 @@ tbody tr:last-child td {
   .page-header,
   .add-form {
     align-items: stretch;
-    flex-direction: column;
+    grid-template-columns: 1fr;
   }
 
   .filters {

@@ -26,7 +26,7 @@ h2 {
 
 .profile-card {
   width: min(100%, 760px);
-  padding: 24px;
+  padding: 28px;
   border: 1px solid #d9e1ee;
   border-radius: 8px;
   background: #ffffff;
@@ -36,12 +36,13 @@ h2 {
 .profile-form {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 24px;
+  gap: 32px;
 }
 
 .field {
   display: grid;
   gap: 10px;
+  min-width: 0;
 }
 
 label {
