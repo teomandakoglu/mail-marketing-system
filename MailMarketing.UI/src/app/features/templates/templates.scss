@@ -122,8 +122,9 @@ input.invalid {
 }
 
 .primary-button {
+  display: block;
   justify-self: start;
-  margin-top: 12px;
+  margin-top: 30px;
   padding: 0 18px;
   background: #0f9f8e;
 }
@@ -164,7 +165,7 @@ input.invalid {
 
 .editor-field {
   min-width: 0;
-  padding-bottom: 4px;
+  padding-bottom: 10px;
 }
 
 quill-editor {

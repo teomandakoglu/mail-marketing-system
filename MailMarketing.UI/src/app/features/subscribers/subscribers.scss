@@ -49,13 +49,19 @@ h2 {
 .add-form,
 .filters {
   display: flex;
-  align-items: flex-start;
-  gap: 1rem;
+  align-items: flex-end;
+  gap: 24px;
 }
 
 .filters {
   display: grid;
-  grid-template-columns: repeat(2, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+}
+
+.add-form .field {
+  flex: 1 1 320px;
+  min-width: 0;
 }
 
 .field {
@@ -130,6 +136,7 @@ input.invalid {
 .primary-button {
   align-self: flex-end;
   flex: 0 0 auto;
+  min-width: 148px;
   padding: 0 18px;
   background: #0f9f8e;
   white-space: nowrap;
@@ -210,9 +217,12 @@ tbody tr:last-child td {
 
 @media (max-width: 760px) {
   .page-header,
-  .add-form,
-  .filters {
+  .add-form {
+    align-items: stretch;
     flex-direction: column;
+  }
+
+  .filters {
     grid-template-columns: 1fr;
   }
 
