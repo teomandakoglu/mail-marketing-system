@@ -20,6 +20,11 @@ public partial class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterDto registerDto)
     {
+        if (registerDto.Password != registerDto.ConfirmPassword)
+        {
+            return BadRequest("Parolalar eşleşmelidir.");
+        }
+
         if (!PasswordRegex().IsMatch(registerDto.Password))
         {
             return BadRequest("Parola en az 8 karakter, büyük harf, küçük harf ve rakam içermelidir.");
@@ -33,9 +38,14 @@ public partial class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginDto loginDto)
     {
-        var token = await _authService.LoginAsync(loginDto);
+        var result = await _authService.LoginDetailedAsync(loginDto);
 
-        return string.IsNullOrWhiteSpace(token) ? Unauthorized("Invalid email or password.") : Ok(new { Token = token });
+        return result.FailureReason switch
+        {
+            LoginFailureReason.UserNotFound => Unauthorized("Kullanıcı kayıtlı değil."),
+            LoginFailureReason.WrongPassword => Unauthorized("Parola hatalı."),
+            _ => Ok(new { Token = result.Token })
+        };
     }
 
     [AllowAnonymous]

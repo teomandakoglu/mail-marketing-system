@@ -26,6 +26,15 @@
       <p class="error">Parola en az 8 karakter, büyük harf, küçük harf ve rakam içermelidir.</p>
     }
 
+    <label>
+      Parola Tekrar
+      <input type="password" formControlName="confirmPassword" autocomplete="new-password" />
+    </label>
+
+    @if (showConfirmPasswordError) {
+      <p class="error">Parolalar eşleşmelidir.</p>
+    }
+
     @if (errorMessage) {
       <p class="error">{{ errorMessage }}</p>
     }

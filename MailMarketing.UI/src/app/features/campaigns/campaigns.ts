@@ -82,9 +82,9 @@ export class Campaigns implements OnInit {
         this.isSending.set(false);
         this.successMessage.set('Gönderim başarıyla kuyruğa alındı.');
       },
-      error: () => {
+      error: error => {
         this.isSending.set(false);
-        this.errorMessage.set('Gönderim başlatılamadı.');
+        this.errorMessage.set(error?.error || 'Gönderim başlatılamadı.');
       }
     });
   }

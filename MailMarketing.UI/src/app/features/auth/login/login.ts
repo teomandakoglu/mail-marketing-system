@@ -36,9 +36,9 @@ export class Login {
         this.isSubmitting = false;
         void this.router.navigate(['/panel/dashboard']);
       },
-      error: () => {
+      error: error => {
         this.isSubmitting = false;
-        this.errorMessage = 'Email veya parola hatalı.';
+        this.errorMessage = error?.error || 'Email veya parola hatalı.';
       }
     });
   }

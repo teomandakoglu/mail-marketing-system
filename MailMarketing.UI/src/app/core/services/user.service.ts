@@ -12,6 +12,15 @@ export interface UserProfileDto {
   email: string;
 }
 
+export interface UserListDto {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  isActive: boolean;
+  createdAt: string;
+}
+
 export interface UpdateUserProfileDto {
   firstName: string;
   lastName: string;
@@ -33,6 +42,14 @@ export class UserService {
 
   getProfile(): Observable<UserProfileDto> {
     return this.http.get<UserProfileDto>(`${this.apiUrl}/profile`);
+  }
+
+  getUsers(): Observable<UserListDto[]> {
+    return this.http.get<UserListDto[]>(this.apiUrl);
+  }
+
+  deactivateUser(id: number): Observable<void> {
+    return this.http.patch<void>(`${this.apiUrl}/${id}/deactivate`, {});
   }
 
   updateProfile(dto: UpdateUserProfileDto): Observable<UpdateProfileResponse> {

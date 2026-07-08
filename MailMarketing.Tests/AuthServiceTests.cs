@@ -21,7 +21,8 @@ public sealed class AuthServiceTests
             FirstName = "Teoman",
             LastName = "Tester",
             Email = "teoman@example.com",
-            Password = "Password123"
+            Password = "Password123",
+            ConfirmPassword = "Password123"
         });
 
         var user = await context.Users.SingleAsync();
@@ -35,6 +36,61 @@ public sealed class AuthServiceTests
         Assert.NotEqual("Password123", user.EncryptedPassword);
         Assert.Equal("Password123", encryptionService.Decrypt(user.EncryptedPassword));
         Assert.False(string.IsNullOrWhiteSpace(token));
+    }
+
+    [Fact]
+    public async Task RegisterRejectsMismatchedConfirmPassword()
+    {
+        await using var context = CreateContext();
+        IAuthService authService = new AuthService(context, CreateEncryptionService(), CreateConfiguration());
+
+        var result = await authService.RegisterAsync(new RegisterDto
+        {
+            FirstName = "Mismatch",
+            LastName = "User",
+            Email = "mismatch@example.com",
+            Password = "Password123",
+            ConfirmPassword = "Password124"
+        });
+
+        Assert.False(result);
+        Assert.Empty(context.Users);
+    }
+
+    [Fact]
+    public async Task LoginDistinguishesMissingUserFromWrongPassword()
+    {
+        await using var context = CreateContext();
+        IAuthService authService = new AuthService(context, CreateEncryptionService(), CreateConfiguration());
+        await authService.RegisterAsync(new RegisterDto
+        {
+            FirstName = "Login",
+            LastName = "User",
+            Email = "login@example.com",
+            Password = "Password123",
+            ConfirmPassword = "Password123"
+        });
+
+        var missingUser = await authService.LoginDetailedAsync(new LoginDto
+        {
+            Email = "missing@example.com",
+            Password = "Password123"
+        });
+        var wrongPassword = await authService.LoginDetailedAsync(new LoginDto
+        {
+            Email = "login@example.com",
+            Password = "WrongPassword123"
+        });
+        var success = await authService.LoginDetailedAsync(new LoginDto
+        {
+            Email = "login@example.com",
+            Password = "Password123"
+        });
+
+        Assert.Equal(LoginFailureReason.UserNotFound, missingUser.FailureReason);
+        Assert.Equal(LoginFailureReason.WrongPassword, wrongPassword.FailureReason);
+        Assert.False(string.IsNullOrWhiteSpace(success.Token));
+        Assert.Null(success.FailureReason);
     }
 
     private static MailMarketingDbContext CreateContext()

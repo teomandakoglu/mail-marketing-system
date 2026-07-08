@@ -48,6 +48,10 @@ export const routes: Routes = [
     redirectTo: 'panel/profile'
   },
   {
+    path: 'users',
+    redirectTo: 'panel/users'
+  },
+  {
     path: 'panel',
     component: MainLayoutComponent,
     canActivate: [authGuard],
@@ -84,6 +88,10 @@ export const routes: Routes = [
       {
         path: 'profile',
         loadComponent: () => import('./features/profile/profile').then(component => component.Profile)
+      },
+      {
+        path: 'users',
+        loadComponent: () => import('./features/users/users').then(component => component.Users)
       }
     ]
   },

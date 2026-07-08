@@ -40,7 +40,16 @@ public class MailLogService : IMailLogService
 
         if (!string.IsNullOrWhiteSpace(filter.Status))
         {
-            query = query.Where(mailLog => mailLog.Status == filter.Status);
+            var acceptedStatuses = filter.Status switch
+            {
+                "Başarılı" => new[] { "Başarılı", "Success" },
+                "Başarısız" => new[] { "Başarısız", "Failed" },
+                "Success" => new[] { "Success", "Başarılı" },
+                "Failed" => new[] { "Failed", "Başarısız" },
+                _ => new[] { filter.Status }
+            };
+
+            query = query.Where(mailLog => acceptedStatuses.Contains(mailLog.Status));
         }
 
         return await query

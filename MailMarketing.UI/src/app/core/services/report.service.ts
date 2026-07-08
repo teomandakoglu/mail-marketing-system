@@ -33,7 +33,7 @@ export class ReportService {
 
     Object.entries(filter).forEach(([key, value]) => {
       if (key === 'status') {
-        if (value === 'Success' || value === 'Failed') {
+        if (value === 'Success' || value === 'Failed' || value === 'Başarılı' || value === 'Başarısız') {
           params = params.set(key, value);
         }
 

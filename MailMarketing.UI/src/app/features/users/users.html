@@ -1,0 +1,51 @@
+<section class="users-page">
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">Kullanıcı Yönetimi</p>
+      <h2>Kullanıcılar</h2>
+    </div>
+    <span class="count">{{ users().length }} kayıt</span>
+  </header>
+
+  <p class="success-message" *ngIf="successMessage()">{{ successMessage() }}</p>
+  <p class="error-message" *ngIf="errorMessage()">{{ errorMessage() }}</p>
+
+  <section class="table-panel">
+    <div class="loading-state" *ngIf="isLoading()">Kullanıcılar yükleniyor...</div>
+
+    <table *ngIf="!isLoading() && users().length > 0">
+      <thead>
+        <tr>
+          <th>Ad</th>
+          <th>Soyad</th>
+          <th>E-posta</th>
+          <th>Durum</th>
+          <th>Kayıt Zamanı</th>
+          <th class="actions-column">İşlemler</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users()">
+          <td>{{ user.firstName }}</td>
+          <td>{{ user.lastName }}</td>
+          <td>{{ user.email }}</td>
+          <td>
+            <span class="status-badge" [class.inactive]="!user.isActive">
+              {{ user.isActive ? 'Aktif' : 'Pasif' }}
+            </span>
+          </td>
+          <td>{{ user.createdAt | date: 'dd.MM.yyyy HH:mm' }}</td>
+          <td class="actions-column">
+            <button class="danger-button" type="button" [disabled]="!user.isActive" (click)="deactivate(user)">
+              Pasife Al
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="empty-state" *ngIf="!isLoading() && users().length === 0">
+      Gösterilecek kullanıcı bulunamadı.
+    </div>
+  </section>
+</section>

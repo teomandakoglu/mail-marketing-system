@@ -8,6 +8,8 @@ public interface IAuthService
 
     Task<string?> LoginAsync(LoginDto loginDto);
 
+    Task<LoginResult> LoginDetailedAsync(LoginDto loginDto);
+
     Task<bool> CheckEmailAsync(CheckEmailDto checkEmailDto);
 
     Task<bool> ResetPasswordAsync(ResetPasswordDto resetPasswordDto);

@@ -28,6 +28,49 @@ public class UsersController : ControllerBase
         _authService = authService;
     }
 
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        var users = await _context.Users
+            .AsNoTracking()
+            .OrderBy(user => user.Id)
+            .Select(user => new UserListDto
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                IsActive = user.IsActive,
+                CreatedAt = user.CreatedAt
+            })
+            .ToListAsync();
+
+        return Ok(users);
+    }
+
+    [HttpPatch("{id:int}/deactivate")]
+    public async Task<IActionResult> Deactivate(int id)
+    {
+        var currentUserId = GetCurrentUserId();
+
+        if (id == currentUserId)
+        {
+            return BadRequest("Kendi kullanıcınızı pasife alamazsınız.");
+        }
+
+        var user = await _context.Users.SingleOrDefaultAsync(item => item.Id == id);
+
+        if (user is null)
+        {
+            return NotFound("Kullanıcı bulunamadı");
+        }
+
+        user.IsActive = false;
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
+
     [HttpGet("profile")]
     public async Task<IActionResult> GetProfile()
     {

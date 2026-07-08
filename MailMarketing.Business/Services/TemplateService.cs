@@ -20,7 +20,16 @@ public class TemplateService : ITemplateService
             .AsNoTracking()
             .Where(template => template.CreatedByUserId == userId)
             .OrderByDescending(template => template.CreatedAt)
-            .Select(template => MapToDto(template))
+            .Select(template => new TemplateDto
+            {
+                Id = template.Id,
+                Title = template.Title,
+                Content = template.Content,
+                IsActive = template.IsActive,
+                CreatedAt = template.CreatedAt,
+                CreatedByUserId = template.CreatedByUserId,
+                CreatedByUserName = (template.User.FirstName + " " + template.User.LastName).Trim()
+            })
             .ToListAsync();
     }
 
@@ -29,7 +38,16 @@ public class TemplateService : ITemplateService
         return await _context.Templates
             .AsNoTracking()
             .Where(template => template.Id == id && template.CreatedByUserId == userId)
-            .Select(template => MapToDto(template))
+            .Select(template => new TemplateDto
+            {
+                Id = template.Id,
+                Title = template.Title,
+                Content = template.Content,
+                IsActive = template.IsActive,
+                CreatedAt = template.CreatedAt,
+                CreatedByUserId = template.CreatedByUserId,
+                CreatedByUserName = (template.User.FirstName + " " + template.User.LastName).Trim()
+            })
             .SingleOrDefaultAsync();
     }
 
@@ -46,6 +64,7 @@ public class TemplateService : ITemplateService
 
         await _context.Templates.AddAsync(template);
         await _context.SaveChangesAsync();
+        await _context.Entry(template).Reference(item => item.User).LoadAsync();
 
         return MapToDto(template);
     }
@@ -95,7 +114,10 @@ public class TemplateService : ITemplateService
             Content = template.Content,
             IsActive = template.IsActive,
             CreatedAt = template.CreatedAt,
-            CreatedByUserId = template.CreatedByUserId
+            CreatedByUserId = template.CreatedByUserId,
+            CreatedByUserName = template.User is null
+                ? string.Empty
+                : $"{template.User.FirstName} {template.User.LastName}".Trim()
         };
     }
 }

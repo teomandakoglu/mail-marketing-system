@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 
@@ -20,8 +20,9 @@ export class Register {
     firstName: ['', [Validators.required]],
     lastName: ['', [Validators.required]],
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.pattern(passwordPattern)]]
-  });
+    password: ['', [Validators.required, Validators.pattern(passwordPattern)]],
+    confirmPassword: ['', [Validators.required]]
+  }, { validators: this.passwordsMatchValidator });
 
   protected isSubmitting = false;
   protected errorMessage = '';
@@ -40,10 +41,23 @@ export class Register {
         this.isSubmitting = false;
         void this.router.navigate(['/auth/login']);
       },
-      error: () => {
+      error: error => {
         this.isSubmitting = false;
-        this.errorMessage = 'Kayıt tamamlanamadı.';
+        this.errorMessage = error?.error || 'Kayıt tamamlanamadı.';
       }
     });
+  }
+
+  protected get showConfirmPasswordError(): boolean {
+    const control = this.form.controls.confirmPassword;
+
+    return (control.invalid || this.form.hasError('passwordMismatch')) && (control.dirty || control.touched);
+  }
+
+  private passwordsMatchValidator(control: AbstractControl): ValidationErrors | null {
+    const password = control.get('password')?.value;
+    const confirmPassword = control.get('confirmPassword')?.value;
+
+    return password && confirmPassword && password !== confirmPassword ? { passwordMismatch: true } : null;
   }
 }

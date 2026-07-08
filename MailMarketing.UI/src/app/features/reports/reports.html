@@ -32,8 +32,8 @@
       <label for="statusFilter">Durum</label>
       <select id="statusFilter" name="statusFilter" [(ngModel)]="status">
         <option value="">Tümü</option>
-        <option value="Success">Başarılı</option>
-        <option value="Failed">Başarısız</option>
+        <option value="Başarılı">Başarılı</option>
+        <option value="Başarısız">Başarısız</option>
       </select>
     </div>
 
@@ -61,8 +61,8 @@
           <td>{{ report.subscriberEmail }}</td>
           <td>{{ report.sentAt | date: 'dd.MM.yyyy HH:mm' }}</td>
           <td>
-            <span class="status-badge" [class.failed]="report.status === 'Failed'">
-              {{ report.status === 'Success' ? 'Başarılı' : 'Başarısız' }}
+            <span class="status-badge" [class.failed]="report.status === 'Failed' || report.status === 'Başarısız'">
+              {{ report.status === 'Success' ? 'Başarılı' : report.status === 'Failed' ? 'Başarısız' : report.status }}
             </span>
           </td>
           <td>{{ report.errorMessage || '-' }}</td>

@@ -13,4 +13,6 @@ public class TemplateDto
     public DateTime CreatedAt { get; set; }
 
     public int CreatedByUserId { get; set; }
+
+    public string CreatedByUserName { get; set; } = string.Empty;
 }

@@ -5,6 +5,7 @@ using MailMarketing.Core.Utilities.Security;
 using MailMarketing.DataAccess.Contexts;
 using MailMarketing.Entities.Concrete;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace MailMarketing.Business.Services;
 
@@ -12,11 +13,16 @@ public class MailSenderService : IMailSenderService
 {
     private readonly MailMarketingDbContext _context;
     private readonly IEncryptionService _encryptionService;
+    private readonly IConfiguration _configuration;
 
-    public MailSenderService(MailMarketingDbContext context, IEncryptionService encryptionService)
+    public MailSenderService(
+        MailMarketingDbContext context,
+        IEncryptionService encryptionService,
+        IConfiguration configuration)
     {
         _context = context;
         _encryptionService = encryptionService;
+        _configuration = configuration;
     }
 
     public async Task SendAsync(MailQueueMessage message, CancellationToken cancellationToken = default)
@@ -37,21 +43,23 @@ public class MailSenderService : IMailSenderService
 
         if (emailConfig is null)
         {
-            await AddMailLogAsync(template.Id, subscriber.Id, "Failed", "Email configuration not found.", cancellationToken);
+            await AddMailLogAsync(template.Id, subscriber.Id, "Başarısız", "Email configuration not found.", cancellationToken);
             return;
         }
 
         try
         {
+            using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            timeoutCts.CancelAfter(GetTimeout());
             using var mailMessage = BuildMailMessage(emailConfig, template, subscriber);
             using var smtpClient = BuildSmtpClient(emailConfig);
 
-            await smtpClient.SendMailAsync(mailMessage, cancellationToken);
-            await AddMailLogAsync(template.Id, subscriber.Id, "Success", null, cancellationToken);
+            await smtpClient.SendMailAsync(mailMessage, timeoutCts.Token);
+            await AddMailLogAsync(template.Id, subscriber.Id, "Başarılı", null, cancellationToken);
         }
         catch (Exception exception)
         {
-            await AddMailLogAsync(template.Id, subscriber.Id, "Failed", exception.Message, cancellationToken);
+            await AddMailLogAsync(template.Id, subscriber.Id, "Başarısız", exception.Message, cancellationToken);
         }
     }
 
@@ -71,10 +79,19 @@ public class MailSenderService : IMailSenderService
         return new SmtpClient(emailConfig.MailServer, emailConfig.SmtpPort)
         {
             EnableSsl = emailConfig.UseSsl,
+            Timeout = (int)GetTimeout().TotalMilliseconds,
             Credentials = new NetworkCredential(
                 emailConfig.EmailAddress,
                 _encryptionService.Decrypt(emailConfig.EncryptedPassword))
         };
+    }
+
+    private TimeSpan GetTimeout()
+    {
+        var configuredValue = _configuration["MailSending:TimeoutSeconds"];
+        var timeoutSeconds = int.TryParse(configuredValue, out var parsedTimeout) ? parsedTimeout : 30;
+
+        return TimeSpan.FromSeconds(Math.Max(1, timeoutSeconds));
     }
 
     private async Task AddMailLogAsync(

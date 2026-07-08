@@ -29,6 +29,11 @@ public class AuthService : IAuthService
 
     public async Task<bool> RegisterAsync(RegisterDto registerDto)
     {
+        if (registerDto.Password != registerDto.ConfirmPassword)
+        {
+            return false;
+        }
+
         var normalizedEmail = registerDto.Email.Trim().ToLowerInvariant();
         var emailExists = await _context.Users.AnyAsync(user => user.Email == normalizedEmail);
 
@@ -55,17 +60,26 @@ public class AuthService : IAuthService
 
     public async Task<string?> LoginAsync(LoginDto loginDto)
     {
+        var result = await LoginDetailedAsync(loginDto);
+
+        return result.Token;
+    }
+
+    public async Task<LoginResult> LoginDetailedAsync(LoginDto loginDto)
+    {
         var normalizedEmail = loginDto.Email.Trim().ToLowerInvariant();
         var user = await _context.Users.SingleOrDefaultAsync(user => user.Email == normalizedEmail && user.IsActive);
 
         if (user is null)
         {
-            return null;
+            return new LoginResult { FailureReason = LoginFailureReason.UserNotFound };
         }
 
         var decryptedPassword = _encryptionService.Decrypt(user.EncryptedPassword);
 
-        return decryptedPassword == loginDto.Password ? GenerateJwtToken(user) : null;
+        return decryptedPassword == loginDto.Password
+            ? new LoginResult { Token = GenerateJwtToken(user) }
+            : new LoginResult { FailureReason = LoginFailureReason.WrongPassword };
     }
 
     public async Task<bool> CheckEmailAsync(CheckEmailDto checkEmailDto)

@@ -9,5 +9,6 @@ public class ResetPasswordDto
     public string Email { get; set; } = string.Empty;
 
     [Required]
+    [RegularExpression("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$")]
     public string NewPassword { get; set; } = string.Empty;
 }

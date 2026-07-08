@@ -9,6 +9,7 @@ export interface TemplateDto {
   content: string;
   isActive: boolean;
   createdAt: string;
+  createdByUserName: string;
 }
 
 export interface CreateTemplateDto {

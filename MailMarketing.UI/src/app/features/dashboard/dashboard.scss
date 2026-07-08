@@ -59,6 +59,29 @@ strong {
   line-height: 1;
 }
 
+.quick-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.quick-links a {
+  min-height: 44px;
+  padding: 12px 14px;
+  border: 1px solid #d9e1ee;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #172033;
+  font-weight: 800;
+  text-align: center;
+  text-decoration: none;
+  box-shadow: 0 8px 24px rgba(23, 32, 51, 0.06);
+}
+
+.quick-links a:hover {
+  background: #f8fafc;
+}
+
 .error-message {
   margin: 0;
   color: #b91c1c;
