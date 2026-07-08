@@ -46,7 +46,7 @@ h2 {
   display: grid;
   grid-template-columns: minmax(220px, 1.3fr) repeat(3, minmax(150px, 1fr)) auto;
   align-items: end;
-  gap: 16px;
+  gap: 1.5rem;
   padding: 20px;
 }
 

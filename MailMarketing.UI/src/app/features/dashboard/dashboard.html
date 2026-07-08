@@ -4,7 +4,6 @@
       <p class="eyebrow">Ana Sayfa</p>
       <h2>Hoş Geldiniz, {{ currentUser() }}</h2>
     </div>
-    <span class="status-pill">{{ isLoading() ? 'Yükleniyor' : 'Güncel' }}</span>
   </header>
 
   <p class="error-message" *ngIf="errorMessage()">{{ errorMessage() }}</p>

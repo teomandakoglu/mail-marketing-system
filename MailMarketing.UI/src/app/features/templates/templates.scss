@@ -48,7 +48,7 @@ h2 {
 
 .template-form {
   display: grid;
-  gap: 16px;
+  gap: 18px;
 }
 
 .field {
@@ -123,6 +123,7 @@ input.invalid {
 
 .primary-button {
   justify-self: start;
+  margin-top: 12px;
   padding: 0 18px;
   background: #0f9f8e;
 }
@@ -163,6 +164,7 @@ input.invalid {
 
 .editor-field {
   min-width: 0;
+  padding-bottom: 4px;
 }
 
 quill-editor {
