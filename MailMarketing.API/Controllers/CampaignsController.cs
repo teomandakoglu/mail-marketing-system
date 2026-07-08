@@ -52,8 +52,7 @@ public class CampaignsController : ControllerBase
 
         var validSubscriberCount = await _context.Subscribers
             .CountAsync(subscriber =>
-                distinctSubscriberIds.Contains(subscriber.Id) &&
-                subscriber.UserId == userId,
+                distinctSubscriberIds.Contains(subscriber.Id),
                 cancellationToken);
 
         if (validSubscriberCount != distinctSubscriberIds.Count)

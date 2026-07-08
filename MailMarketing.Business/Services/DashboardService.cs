@@ -17,7 +17,7 @@ public class DashboardService : IDashboardService
     {
         return new DashboardStatsDto
         {
-            TotalSubscribers = await _dbContext.Subscribers.CountAsync(subscriber => subscriber.UserId == userId),
+            TotalSubscribers = await _dbContext.Subscribers.CountAsync(),
             TotalTemplates = await _dbContext.Templates.CountAsync(template => template.CreatedByUserId == userId),
             TotalSentMails = await _dbContext.MailLogs.CountAsync(mailLog => mailLog.Template.CreatedByUserId == userId)
         };

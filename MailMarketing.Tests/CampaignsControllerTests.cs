@@ -76,7 +76,7 @@ public sealed class CampaignsControllerTests
     }
 
     [Fact]
-    public async Task SendRejectsSubscribersThatDoNotBelongToCurrentUser()
+    public async Task SendAllowsApplicationWideSubscribers()
     {
         var queue = new RecordingMailQueue();
         await using var context = CreateContext();
@@ -89,9 +89,10 @@ public sealed class CampaignsControllerTests
             SubscriberIds = new List<int> { 3, 99 }
         });
 
-        var badRequest = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Seçilen aboneler geçersiz.", badRequest.Value);
-        Assert.Empty(queue.Messages);
+        var acceptedResult = Assert.IsType<AcceptedResult>(result);
+        Assert.NotNull(acceptedResult.Value);
+        Assert.Equal(2, queue.Messages.Count);
+        Assert.Equal(new[] { 3, 99 }, queue.Messages.Select(message => message.SubscriberId));
     }
 
     private static CampaignsController CreateController(RecordingMailQueue queue, MailMarketingDbContext context, int userId)

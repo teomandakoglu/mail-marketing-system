@@ -16,6 +16,17 @@ Mail Marketing System is a full-stack email marketing application built with .NE
 - Delivery log reporting by template, date range, and status
 - User management screen with active/passive status
 
+## Subscription Model
+
+Public subscriptions are stored in a shared application-wide subscriber pool. This means an email entered on the landing page is visible in the management panel for every active admin user.
+
+Campaign ownership still belongs to the logged-in admin:
+
+- SMTP settings are read from the logged-in admin account.
+- Templates are managed by the logged-in admin account.
+- Subscribers are selected from the shared subscriber pool.
+- Delivery logs are reported under the selected template and sending admin.
+
 ## Tech Stack
 
 - Backend: .NET 8 ASP.NET Core Web API

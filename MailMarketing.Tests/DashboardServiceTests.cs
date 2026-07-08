@@ -8,7 +8,7 @@ namespace MailMarketing.Tests;
 public sealed class DashboardServiceTests
 {
     [Fact]
-    public async Task DashboardStatsAreScopedToCurrentUser()
+    public async Task DashboardStatsCountApplicationWideSubscribersAndCurrentUserTemplates()
     {
         await using var context = CreateContext();
         context.Users.AddRange(
@@ -43,7 +43,7 @@ public sealed class DashboardServiceTests
 
         var stats = await service.GetDashboardStatsAsync(1);
 
-        Assert.Equal(1, stats.TotalSubscribers);
+        Assert.Equal(2, stats.TotalSubscribers);
         Assert.Equal(1, stats.TotalTemplates);
         Assert.Equal(1, stats.TotalSentMails);
     }

@@ -18,7 +18,6 @@ public class SubscriberService : ISubscriberService
     {
         return await _context.Subscribers
             .AsNoTracking()
-            .Where(subscriber => subscriber.UserId == userId)
             .OrderByDescending(subscriber => subscriber.CreatedAt)
             .Select(subscriber => new SubscriberDto
             {
@@ -34,7 +33,7 @@ public class SubscriberService : ISubscriberService
     {
         var normalizedEmail = createSubscriberDto.Email.Trim().ToLowerInvariant();
         var exists = await _context.Subscribers
-            .AnyAsync(subscriber => subscriber.UserId == userId && subscriber.Email == normalizedEmail);
+            .AnyAsync(subscriber => subscriber.Email == normalizedEmail);
 
         if (exists)
         {
@@ -68,7 +67,7 @@ public class SubscriberService : ISubscriberService
     {
         var subscriber = await _context.Subscribers
             .Include(item => item.MailLogs)
-            .SingleOrDefaultAsync(item => item.Id == id && item.UserId == userId);
+            .SingleOrDefaultAsync(item => item.Id == id);
 
         if (subscriber is null || subscriber.MailLogs.Count > 0)
         {

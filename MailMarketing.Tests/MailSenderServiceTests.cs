@@ -30,6 +30,33 @@ public sealed class MailSenderServiceTests
     }
 
     [Fact]
+    public async Task SendAsyncUsesApplicationWideSubscribers()
+    {
+        await using var context = CreateContext();
+        await SeedMailDataAsync(context);
+        context.Subscribers.Add(new Subscriber
+        {
+            Id = 30,
+            Email = "public@example.com",
+            UserId = 2
+        });
+        await context.SaveChangesAsync();
+        IMailSenderService service = new MailSenderService(context, CreateEncryptionService(), CreateConfiguration());
+
+        await service.SendAsync(new MailQueueMessage
+        {
+            UserId = 1,
+            TemplateId = 10,
+            SubscriberId = 30
+        });
+
+        var log = await context.MailLogs.SingleAsync();
+        Assert.Equal(30, log.SubscriberId);
+        Assert.Equal("Başarısız", log.Status);
+        Assert.Equal("Email configuration not found.", log.ErrorMessage);
+    }
+
+    [Fact]
     public void ApiConfigurationDefinesMailSendingTimeout()
     {
         var configuration = new ConfigurationBuilder()
@@ -48,6 +75,14 @@ public sealed class MailSenderServiceTests
             FirstName = "Sender",
             LastName = "User",
             Email = "sender@example.com",
+            EncryptedPassword = "encrypted"
+        });
+        context.Users.Add(new User
+        {
+            Id = 2,
+            FirstName = "Public",
+            LastName = "Owner",
+            Email = "public-owner@example.com",
             EncryptedPassword = "encrypted"
         });
         context.Templates.Add(new Template

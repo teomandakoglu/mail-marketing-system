@@ -13,13 +13,13 @@ namespace MailMarketing.Tests;
 public sealed class CrudServiceTests
 {
     [Fact]
-    public async Task SubscriberServiceRejectsDuplicateEmail()
+    public async Task SubscriberServiceRejectsDuplicateEmailAcrossApplication()
     {
         await using var context = CreateContext();
         ISubscriberService service = new SubscriberService(context);
 
         var first = await service.AddAsync(new CreateSubscriberDto { Email = "member@example.com" }, 1);
-        var second = await service.AddAsync(new CreateSubscriberDto { Email = "MEMBER@example.com" }, 1);
+        var second = await service.AddAsync(new CreateSubscriberDto { Email = "MEMBER@example.com" }, 2);
         var subscribers = await service.GetAllAsync(1);
 
         Assert.True(first);
@@ -28,7 +28,7 @@ public sealed class CrudServiceTests
     }
 
     [Fact]
-    public async Task SubscriberServiceScopesSubscribersToCurrentUser()
+    public async Task SubscriberServiceUsesApplicationWideSubscriberPool()
     {
         await using var context = CreateContext();
         context.Subscribers.AddRange(
@@ -47,13 +47,14 @@ public sealed class CrudServiceTests
         ISubscriberService service = new SubscriberService(context);
 
         var subscribers = await service.GetAllAsync(1);
-        var addedForOtherUser = await service.AddAsync(new CreateSubscriberDto { Email = "mine@example.com" }, 2);
+        var duplicateForOtherUser = await service.AddAsync(new CreateSubscriberDto { Email = "mine@example.com" }, 2);
         var deletedOtherUsersSubscriber = await service.DeleteAsync(2, 1);
 
-        Assert.Single(subscribers);
-        Assert.Equal("mine@example.com", subscribers[0].Email);
-        Assert.True(addedForOtherUser);
-        Assert.False(deletedOtherUsersSubscriber);
+        Assert.Equal(2, subscribers.Count);
+        Assert.Contains(subscribers, subscriber => subscriber.Email == "mine@example.com");
+        Assert.Contains(subscribers, subscriber => subscriber.Email == "other@example.com");
+        Assert.False(duplicateForOtherUser);
+        Assert.True(deletedOtherUsersSubscriber);
     }
 
     [Fact]
