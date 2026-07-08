@@ -20,6 +20,34 @@ export const routes: Routes = [
     loadComponent: () => import('./features/landing/landing').then(component => component.Landing)
   },
   {
+    path: 'dashboard',
+    redirectTo: 'panel/dashboard'
+  },
+  {
+    path: 'subscribers',
+    redirectTo: 'panel/subscribers'
+  },
+  {
+    path: 'templates',
+    redirectTo: 'panel/templates'
+  },
+  {
+    path: 'email-config',
+    redirectTo: 'panel/email-config'
+  },
+  {
+    path: 'campaigns',
+    redirectTo: 'panel/campaigns'
+  },
+  {
+    path: 'reports',
+    redirectTo: 'panel/reports'
+  },
+  {
+    path: 'profile',
+    redirectTo: 'panel/profile'
+  },
+  {
     path: 'panel',
     component: MainLayoutComponent,
     canActivate: [authGuard],
