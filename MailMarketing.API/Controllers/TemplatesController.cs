@@ -21,7 +21,7 @@ public class TemplatesController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var templates = await _templateService.GetAllAsync();
+        var templates = await _templateService.GetAllAsync(GetCurrentUserId());
 
         return Ok(templates);
     }
@@ -29,7 +29,7 @@ public class TemplatesController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var template = await _templateService.GetByIdAsync(id);
+        var template = await _templateService.GetByIdAsync(id, GetCurrentUserId());
 
         return template is null ? NotFound() : Ok(template);
     }
@@ -46,7 +46,7 @@ public class TemplatesController : ControllerBase
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, UpdateTemplateDto updateTemplateDto)
     {
-        var result = await _templateService.UpdateAsync(id, updateTemplateDto);
+        var result = await _templateService.UpdateAsync(id, updateTemplateDto, GetCurrentUserId());
 
         return result ? NoContent() : NotFound();
     }
@@ -54,7 +54,7 @@ public class TemplatesController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var result = await _templateService.DeleteAsync(id);
+        var result = await _templateService.DeleteAsync(id, GetCurrentUserId());
 
         return result ? NoContent() : BadRequest("Template could not be deleted.");
     }

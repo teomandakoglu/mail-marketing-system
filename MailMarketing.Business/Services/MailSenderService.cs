@@ -21,7 +21,8 @@ public class MailSenderService : IMailSenderService
 
     public async Task SendAsync(MailQueueMessage message, CancellationToken cancellationToken = default)
     {
-        var template = await _context.Templates.SingleOrDefaultAsync(item => item.Id == message.TemplateId, cancellationToken);
+        var template = await _context.Templates
+            .SingleOrDefaultAsync(item => item.Id == message.TemplateId && item.CreatedByUserId == message.UserId, cancellationToken);
         var subscriber = await _context.Subscribers.SingleOrDefaultAsync(item => item.Id == message.SubscriberId, cancellationToken);
 
         if (template is null || subscriber is null)

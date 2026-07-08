@@ -54,10 +54,10 @@ public sealed class CrudServiceTests
             Title = "Updated",
             Content = "<p>Updated</p>",
             IsActive = false
-        });
+        }, 7);
 
-        var loaded = await service.GetByIdAsync(created.Id);
-        var deleted = await service.DeleteAsync(created.Id);
+        var loaded = await service.GetByIdAsync(created.Id, 7);
+        var deleted = await service.DeleteAsync(created.Id, 7);
 
         Assert.Equal("Welcome", created.Title);
         Assert.True(updated);
@@ -65,7 +65,53 @@ public sealed class CrudServiceTests
         Assert.Equal("Updated", loaded.Title);
         Assert.False(loaded.IsActive);
         Assert.True(deleted);
-        Assert.Empty(await service.GetAllAsync());
+        Assert.Empty(await service.GetAllAsync(7));
+    }
+
+    [Fact]
+    public async Task TemplateServiceReturnsOnlyCurrentUsersTemplates()
+    {
+        await using var context = CreateContext();
+        context.Users.AddRange(
+            new User
+            {
+                Id = 7,
+                FirstName = "Template",
+                LastName = "Owner",
+                Email = "owner@example.com",
+                EncryptedPassword = "encrypted"
+            },
+            new User
+            {
+                Id = 8,
+                FirstName = "Other",
+                LastName = "Owner",
+                Email = "other@example.com",
+                EncryptedPassword = "encrypted"
+            });
+        context.Templates.AddRange(
+            new Template
+            {
+                Title = "Mine",
+                Content = "<p>Mine</p>",
+                CreatedByUserId = 7
+            },
+            new Template
+            {
+                Title = "Not Mine",
+                Content = "<p>Not Mine</p>",
+                CreatedByUserId = 8
+            });
+        await context.SaveChangesAsync();
+
+        ITemplateService service = new TemplateService(context);
+
+        var templates = await service.GetAllAsync(7);
+        var hiddenTemplate = await service.GetByIdAsync(2, 7);
+
+        Assert.Single(templates);
+        Assert.Equal("Mine", templates[0].Title);
+        Assert.Null(hiddenTemplate);
     }
 
     [Fact]

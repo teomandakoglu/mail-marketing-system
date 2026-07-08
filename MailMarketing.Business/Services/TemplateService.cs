@@ -14,20 +14,21 @@ public class TemplateService : ITemplateService
         _context = context;
     }
 
-    public async Task<List<TemplateDto>> GetAllAsync()
+    public async Task<List<TemplateDto>> GetAllAsync(int userId)
     {
         return await _context.Templates
             .AsNoTracking()
+            .Where(template => template.CreatedByUserId == userId)
             .OrderByDescending(template => template.CreatedAt)
             .Select(template => MapToDto(template))
             .ToListAsync();
     }
 
-    public async Task<TemplateDto?> GetByIdAsync(int id)
+    public async Task<TemplateDto?> GetByIdAsync(int id, int userId)
     {
         return await _context.Templates
             .AsNoTracking()
-            .Where(template => template.Id == id)
+            .Where(template => template.Id == id && template.CreatedByUserId == userId)
             .Select(template => MapToDto(template))
             .SingleOrDefaultAsync();
     }
@@ -49,9 +50,10 @@ public class TemplateService : ITemplateService
         return MapToDto(template);
     }
 
-    public async Task<bool> UpdateAsync(int id, UpdateTemplateDto updateTemplateDto)
+    public async Task<bool> UpdateAsync(int id, UpdateTemplateDto updateTemplateDto, int userId)
     {
-        var template = await _context.Templates.SingleOrDefaultAsync(item => item.Id == id);
+        var template = await _context.Templates
+            .SingleOrDefaultAsync(item => item.Id == id && item.CreatedByUserId == userId);
 
         if (template is null)
         {
@@ -67,11 +69,11 @@ public class TemplateService : ITemplateService
         return true;
     }
 
-    public async Task<bool> DeleteAsync(int id)
+    public async Task<bool> DeleteAsync(int id, int userId)
     {
         var template = await _context.Templates
             .Include(item => item.MailLogs)
-            .SingleOrDefaultAsync(item => item.Id == id);
+            .SingleOrDefaultAsync(item => item.Id == id && item.CreatedByUserId == userId);
 
         if (template is null || template.MailLogs.Count > 0)
         {
