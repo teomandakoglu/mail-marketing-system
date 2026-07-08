@@ -14,10 +14,11 @@ public class SubscriberService : ISubscriberService
         _context = context;
     }
 
-    public async Task<List<SubscriberDto>> GetAllAsync()
+    public async Task<List<SubscriberDto>> GetAllAsync(int userId)
     {
         return await _context.Subscribers
             .AsNoTracking()
+            .Where(subscriber => subscriber.UserId == userId)
             .OrderByDescending(subscriber => subscriber.CreatedAt)
             .Select(subscriber => new SubscriberDto
             {
@@ -29,10 +30,11 @@ public class SubscriberService : ISubscriberService
             .ToListAsync();
     }
 
-    public async Task<bool> AddAsync(CreateSubscriberDto createSubscriberDto)
+    public async Task<bool> AddAsync(CreateSubscriberDto createSubscriberDto, int userId)
     {
         var normalizedEmail = createSubscriberDto.Email.Trim().ToLowerInvariant();
-        var exists = await _context.Subscribers.AnyAsync(subscriber => subscriber.Email == normalizedEmail);
+        var exists = await _context.Subscribers
+            .AnyAsync(subscriber => subscriber.UserId == userId && subscriber.Email == normalizedEmail);
 
         if (exists)
         {
@@ -41,6 +43,7 @@ public class SubscriberService : ISubscriberService
 
         await _context.Subscribers.AddAsync(new Subscriber
         {
+            UserId = userId,
             Email = normalizedEmail,
             IsActive = true,
             CreatedAt = DateTime.UtcNow
@@ -51,11 +54,21 @@ public class SubscriberService : ISubscriberService
         return true;
     }
 
-    public async Task<bool> DeleteAsync(int id)
+    public async Task<bool> AddToDefaultTenantAsync(CreateSubscriberDto createSubscriberDto)
+    {
+        var defaultUserId = await _context.Users
+            .OrderBy(user => user.Id)
+            .Select(user => (int?)user.Id)
+            .FirstOrDefaultAsync();
+
+        return defaultUserId.HasValue && await AddAsync(createSubscriberDto, defaultUserId.Value);
+    }
+
+    public async Task<bool> DeleteAsync(int id, int userId)
     {
         var subscriber = await _context.Subscribers
             .Include(item => item.MailLogs)
-            .SingleOrDefaultAsync(item => item.Id == id);
+            .SingleOrDefaultAsync(item => item.Id == id && item.UserId == userId);
 
         if (subscriber is null || subscriber.MailLogs.Count > 0)
         {

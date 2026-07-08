@@ -4,5 +4,5 @@ namespace MailMarketing.Business.Services;
 
 public interface IDashboardService
 {
-    Task<DashboardStatsDto> GetDashboardStatsAsync();
+    Task<DashboardStatsDto> GetDashboardStatsAsync(int userId);
 }

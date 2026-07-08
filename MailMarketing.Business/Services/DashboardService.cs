@@ -13,13 +13,13 @@ public class DashboardService : IDashboardService
         _dbContext = dbContext;
     }
 
-    public async Task<DashboardStatsDto> GetDashboardStatsAsync()
+    public async Task<DashboardStatsDto> GetDashboardStatsAsync(int userId)
     {
         return new DashboardStatsDto
         {
-            TotalSubscribers = await _dbContext.Subscribers.CountAsync(),
-            TotalTemplates = await _dbContext.Templates.CountAsync(),
-            TotalSentMails = await _dbContext.MailLogs.CountAsync()
+            TotalSubscribers = await _dbContext.Subscribers.CountAsync(subscriber => subscriber.UserId == userId),
+            TotalTemplates = await _dbContext.Templates.CountAsync(template => template.CreatedByUserId == userId),
+            TotalSentMails = await _dbContext.MailLogs.CountAsync(mailLog => mailLog.Template.CreatedByUserId == userId)
         };
     }
 }

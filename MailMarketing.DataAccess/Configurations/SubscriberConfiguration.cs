@@ -16,7 +16,7 @@ public class SubscriberConfiguration : IEntityTypeConfiguration<Subscriber>
             .IsRequired()
             .HasMaxLength(256);
 
-        builder.HasIndex(subscriber => subscriber.Email)
+        builder.HasIndex(subscriber => new { subscriber.UserId, subscriber.Email })
             .IsUnique();
 
         builder.Property(subscriber => subscriber.IsActive)
@@ -24,5 +24,10 @@ public class SubscriberConfiguration : IEntityTypeConfiguration<Subscriber>
 
         builder.Property(subscriber => subscriber.CreatedAt)
             .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+        builder.HasOne(subscriber => subscriber.User)
+            .WithMany(user => user.Subscribers)
+            .HasForeignKey(subscriber => subscriber.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

@@ -60,6 +60,7 @@ public sealed class DataModelTests
         using var context = CreateContext();
 
         AssertForeignKey<User, EmailConfig>(context, nameof(EmailConfig.UserId), DeleteBehavior.Cascade);
+        AssertForeignKey<User, Subscriber>(context, nameof(Subscriber.UserId), DeleteBehavior.Cascade);
         AssertForeignKey<User, Template>(context, nameof(Template.CreatedByUserId), DeleteBehavior.Restrict);
         AssertForeignKey<Template, MailLog>(context, nameof(MailLog.TemplateId), DeleteBehavior.Restrict);
         AssertForeignKey<Subscriber, MailLog>(context, nameof(MailLog.SubscriberId), DeleteBehavior.Restrict);

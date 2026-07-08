@@ -21,4 +21,6 @@ public class User : IEntity
     public ICollection<EmailConfig> EmailConfigs { get; set; } = new List<EmailConfig>();
 
     public ICollection<Template> Templates { get; set; } = new List<Template>();
+
+    public ICollection<Subscriber> Subscribers { get; set; } = new List<Subscriber>();
 }

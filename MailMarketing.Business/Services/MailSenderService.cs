@@ -23,7 +23,8 @@ public class MailSenderService : IMailSenderService
     {
         var template = await _context.Templates
             .SingleOrDefaultAsync(item => item.Id == message.TemplateId && item.CreatedByUserId == message.UserId, cancellationToken);
-        var subscriber = await _context.Subscribers.SingleOrDefaultAsync(item => item.Id == message.SubscriberId, cancellationToken);
+        var subscriber = await _context.Subscribers
+            .SingleOrDefaultAsync(item => item.Id == message.SubscriberId && item.UserId == message.UserId, cancellationToken);
 
         if (template is null || subscriber is null)
         {

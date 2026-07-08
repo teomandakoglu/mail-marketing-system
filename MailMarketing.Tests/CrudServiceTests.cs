@@ -18,13 +18,42 @@ public sealed class CrudServiceTests
         await using var context = CreateContext();
         ISubscriberService service = new SubscriberService(context);
 
-        var first = await service.AddAsync(new CreateSubscriberDto { Email = "member@example.com" });
-        var second = await service.AddAsync(new CreateSubscriberDto { Email = "MEMBER@example.com" });
-        var subscribers = await service.GetAllAsync();
+        var first = await service.AddAsync(new CreateSubscriberDto { Email = "member@example.com" }, 1);
+        var second = await service.AddAsync(new CreateSubscriberDto { Email = "MEMBER@example.com" }, 1);
+        var subscribers = await service.GetAllAsync(1);
 
         Assert.True(first);
         Assert.False(second);
         Assert.Single(subscribers);
+    }
+
+    [Fact]
+    public async Task SubscriberServiceScopesSubscribersToCurrentUser()
+    {
+        await using var context = CreateContext();
+        context.Subscribers.AddRange(
+            new Subscriber
+            {
+                Email = "mine@example.com",
+                UserId = 1
+            },
+            new Subscriber
+            {
+                Email = "other@example.com",
+                UserId = 2
+            });
+        await context.SaveChangesAsync();
+
+        ISubscriberService service = new SubscriberService(context);
+
+        var subscribers = await service.GetAllAsync(1);
+        var addedForOtherUser = await service.AddAsync(new CreateSubscriberDto { Email = "mine@example.com" }, 2);
+        var deletedOtherUsersSubscriber = await service.DeleteAsync(2, 1);
+
+        Assert.Single(subscribers);
+        Assert.Equal("mine@example.com", subscribers[0].Email);
+        Assert.True(addedForOtherUser);
+        Assert.False(deletedOtherUsersSubscriber);
     }
 
     [Fact]
